@@ -1,10 +1,6 @@
 import Auth from "../auth/Auth";
 import React, { Component } from "react";
-import {
-  Button,
-  Form,
-  TextArea
-} from "semantic-ui-react";
+import { Button, Form, TextArea } from "semantic-ui-react";
 
 interface Props {
   auth: Auth;
@@ -41,7 +37,7 @@ class PageForm extends Component<Props, State> {
       name: this.state.name,
       content: this.state.content,
       userId: this.props.auth.userID(),
-      createdAt: this.props.auth.firebase.fieldValue.serverTimestamp()
+      createdAt: this.props.auth.firebase.timestamp()
     });
 
     this.setState({ name: "", content: "" });
