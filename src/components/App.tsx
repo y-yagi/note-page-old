@@ -65,7 +65,6 @@ class App extends Component<Props, State> {
     let { processing, pages } = this.state;
     let panes = [];
 
-    console.log(pages);
     pages.forEach(page =>
       panes.push({
         menuItem: page.name,
