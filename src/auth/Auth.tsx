@@ -16,7 +16,10 @@ export default class Auth {
   }
 
   handleAuthentication(authResult) {
-    let expiresAt = JSON.stringify(new Date().getTime() + 1000 * 60 * 60);
+    // 7 days
+    let expiresAt = JSON.stringify(
+      new Date().getTime() + 1000 * 60 * 60 * 24 * 7
+    );
     localStorage.setItem("user_id", authResult.user.uid);
     localStorage.setItem("expires_at", expiresAt);
     history.replace("/");
