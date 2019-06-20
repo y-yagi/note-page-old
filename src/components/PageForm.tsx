@@ -4,6 +4,7 @@ import { Button, Form, TextArea } from "semantic-ui-react";
 
 interface Props {
   auth: Auth;
+  pageID: string;
 }
 interface State {
   name: string;
@@ -21,7 +22,7 @@ class PageForm extends Component<Props, State> {
 
     this.handleChangeName = this.handleChangeName.bind(this);
     this.handleChangeContent = this.handleChangeContent.bind(this);
-    this.onCreatePage = this.onCreatePage.bind(this);
+    this.onSubmitPage = this.onSubmitPage.bind(this);
   }
 
   handleChangeName(event) {
@@ -32,13 +33,31 @@ class PageForm extends Component<Props, State> {
     this.setState({ content: event.target.value });
   }
 
-  onCreatePage = event => {
-    this.props.auth.firebase.pages().add({
+  componentDidUpdate(prevProps) {
+    if (this.props.pageID !== "" && this.props.pageID !== prevProps.pageID) {
+      this.props.auth.firebase
+        .page(this.props.pageID)
+        .get()
+        .then(snapshot => {
+          const page = snapshot.data();
+          this.setState({ name: page.name, content: page.content });
+        });
+    }
+  }
+
+  onSubmitPage = event => {
+    const data = {
       name: this.state.name,
       content: this.state.content,
       userId: this.props.auth.userID(),
       createdAt: this.props.auth.firebase.timestamp()
-    });
+    };
+
+    if (this.props.pageID === "") {
+      this.props.auth.firebase.pages().add(data);
+    } else {
+      this.props.auth.firebase.page(this.props.pageID).set(data);
+    }
 
     this.setState({ name: "", content: "" });
     event.preventDefault();
@@ -48,7 +67,7 @@ class PageForm extends Component<Props, State> {
     const { name, content } = this.state;
 
     return (
-      <Form onSubmit={event => this.onCreatePage(event)}>
+      <Form onSubmit={event => this.onSubmitPage(event)}>
         <Form.Field required>
           <label>Page Name</label>
           <input

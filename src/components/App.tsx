@@ -22,12 +22,14 @@ interface Props {
 interface State {
   processing: boolean;
   pages: Array<any>;
+  selectedPageID: string;
 }
 
 class App extends Component<Props, State> {
   readonly state: State = {
     processing: false,
-    pages: []
+    pages: [],
+    selectedPageID: ""
   };
 
   unsubscribe: any;
@@ -37,6 +39,7 @@ class App extends Component<Props, State> {
 
     this.unsubscribe = null;
     this.handleDestroy = this.handleDestroy.bind(this);
+    this.handleEdit = this.handleEdit.bind(this);
   }
 
   componentDidMount() {
@@ -49,7 +52,7 @@ class App extends Component<Props, State> {
         if (snapshot.size) {
           snapshot.forEach(doc => pages.push({ ...doc.data(), uid: doc.id }));
         }
-        this.setState({ pages: pages });
+        this.setState({ pages: pages, selectedPageID: "" });
       });
   }
 
@@ -61,8 +64,12 @@ class App extends Component<Props, State> {
     this.props.auth.firebase.page(id).delete();
   }
 
+  handleEdit(id) {
+    this.setState({ selectedPageID: id });
+  }
+
   render() {
-    let { processing, pages } = this.state;
+    let { processing, pages, selectedPageID } = this.state;
     let panes = [];
 
     pages.forEach(page =>
@@ -78,6 +85,15 @@ class App extends Component<Props, State> {
               onClick={() => this.handleDestroy(page.uid)}
             >
               Destroy
+            </Button>
+            <Button
+              type="submit"
+              floated="right"
+              color="blue"
+              size="mini"
+              onClick={() => this.handleEdit(page.uid)}
+            >
+              Edit
             </Button>
             <Interweave
               content={page.content}
@@ -103,7 +119,7 @@ class App extends Component<Props, State> {
           <Tab panes={panes} />
         </Segment>
         <Divider hidden section />
-        <PageForm auth={this.props.auth} />
+        <PageForm auth={this.props.auth} pageID={selectedPageID} />
       </Container>
     );
   }
