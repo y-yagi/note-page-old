@@ -9,12 +9,14 @@ interface Props {
 interface State {
   name: string;
   content: string;
+  action: string;
 }
 
 class PageForm extends Component<Props, State> {
   readonly state: State = {
     name: "",
-    content: ""
+    content: "",
+    action: "create"
   };
 
   constructor(props) {
@@ -40,7 +42,7 @@ class PageForm extends Component<Props, State> {
         .get()
         .then(snapshot => {
           const page = snapshot.data();
-          this.setState({ name: page.name, content: page.content });
+          this.setState({ name: page.name, content: page.content, action: "update" });
         });
     }
   }
@@ -59,12 +61,12 @@ class PageForm extends Component<Props, State> {
       this.props.auth.firebase.page(this.props.pageID).set(data);
     }
 
-    this.setState({ name: "", content: "" });
+    this.setState({ name: "", content: "", action: "create" });
     event.preventDefault();
   };
 
   render() {
-    const { name, content } = this.state;
+    const { name, content, action } = this.state;
 
     return (
       <Form onSubmit={event => this.onSubmitPage(event)}>
@@ -86,7 +88,7 @@ class PageForm extends Component<Props, State> {
             onChange={this.handleChangeContent}
           />
         </Form.Field>
-        <Button type="submit">Submit</Button>
+        <Button type="submit">{action}</Button>
       </Form>
     );
   }
