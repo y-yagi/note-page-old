@@ -42,7 +42,11 @@ class PageForm extends Component<Props, State> {
         .get()
         .then(snapshot => {
           const page = snapshot.data();
-          this.setState({ name: page.name, content: page.content, action: "update" });
+          this.setState({
+            name: page.name,
+            content: page.content,
+            action: "update"
+          });
         });
     }
   }

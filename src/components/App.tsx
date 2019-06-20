@@ -6,6 +6,7 @@ import PageForm from "./PageForm";
 import Auth from "../auth/Auth";
 import {
   Container,
+  Confirm,
   Divider,
   Icon,
   Dimmer,
@@ -23,13 +24,15 @@ interface State {
   processing: boolean;
   pages: Array<any>;
   selectedPageID: string;
+  cancelConfirm: boolean;
 }
 
 class App extends Component<Props, State> {
   readonly state: State = {
     processing: false,
     pages: [],
-    selectedPageID: ""
+    selectedPageID: "",
+    cancelConfirm: false
   };
 
   unsubscribe: any;
@@ -39,6 +42,8 @@ class App extends Component<Props, State> {
 
     this.unsubscribe = null;
     this.handleDestroy = this.handleDestroy.bind(this);
+    this.handleDestroyConfirm = this.handleDestroyConfirm.bind(this);
+    this.handleDestroyCancel = this.handleDestroyCancel.bind(this);
     this.handleEdit = this.handleEdit.bind(this);
   }
 
@@ -61,7 +66,16 @@ class App extends Component<Props, State> {
   }
 
   handleDestroy(id) {
+    this.setState({ cancelConfirm: false });
     this.props.auth.firebase.page(id).delete();
+  }
+
+  handleDestroyConfirm() {
+    this.setState({ cancelConfirm: true });
+  }
+
+  handleDestroyCancel() {
+    this.setState({ cancelConfirm: false });
   }
 
   handleEdit(id) {
@@ -69,7 +83,7 @@ class App extends Component<Props, State> {
   }
 
   render() {
-    let { processing, pages, selectedPageID } = this.state;
+    let { processing, pages, selectedPageID, cancelConfirm } = this.state;
     let panes = [];
 
     pages.forEach(page =>
@@ -82,10 +96,15 @@ class App extends Component<Props, State> {
               floated="right"
               color="red"
               size="mini"
-              onClick={() => this.handleDestroy(page.uid)}
+              onClick={() => this.handleDestroyConfirm()}
             >
               Destroy
             </Button>
+            <Confirm
+              open={cancelConfirm}
+              onCancel={() => this.handleDestroyCancel()}
+              onConfirm={() => this.handleDestroy(page.uid)}
+            />
             <Button
               type="submit"
               floated="right"
