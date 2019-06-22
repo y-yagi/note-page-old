@@ -21,18 +21,18 @@ interface Props {
   auth: Auth;
 }
 interface State {
-  processing: boolean;
   pages: Array<any>;
   selectedPageID: string;
   cancelConfirm: boolean;
+  loading: boolean;
 }
 
 class App extends Component<Props, State> {
   readonly state: State = {
-    processing: false,
     pages: [],
     selectedPageID: "",
-    cancelConfirm: false
+    cancelConfirm: false,
+    loading: true
   };
 
   unsubscribe: any;
@@ -57,7 +57,7 @@ class App extends Component<Props, State> {
         if (snapshot.size) {
           snapshot.forEach(doc => pages.push({ ...doc.data(), uid: doc.id }));
         }
-        this.setState({ pages: pages, selectedPageID: "" });
+        this.setState({ pages: pages, selectedPageID: "", loading: false });
       });
   }
 
@@ -83,7 +83,7 @@ class App extends Component<Props, State> {
   }
 
   render() {
-    let { processing, pages, selectedPageID, cancelConfirm } = this.state;
+    let { loading, pages, selectedPageID, cancelConfirm } = this.state;
     let panes = [];
 
     pages.forEach(page =>
@@ -129,8 +129,8 @@ class App extends Component<Props, State> {
         <Header as="h2" icon textAlign="center" color="grey">
           <Icon name="write" circular />
           <Header.Content>NotePage</Header.Content>
-          <Dimmer active={processing}>
-            <Loader inverted>Processing...</Loader>
+          <Dimmer active={loading}>
+            <Loader inverted>Loading...</Loader>
           </Dimmer>
         </Header>
         <Divider hidden section />
