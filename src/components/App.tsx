@@ -17,11 +17,18 @@ import {
   Tab
 } from "semantic-ui-react";
 
+interface Page {
+  id: string;
+  name: string;
+  uid: string;
+  content: string;
+}
+
 interface Props {
   auth: Auth;
 }
 interface State {
-  pages: Array<any>;
+  pages: Array<Page>;
   selectedPageID: string;
   cancelConfirm: boolean;
   loading: boolean;
@@ -35,7 +42,7 @@ class App extends Component<Props, State> {
     loading: true
   };
 
-  unsubscribe: any;
+  unsubscribe: firebase.Unsubscribe;
 
   constructor(props) {
     super(props);
