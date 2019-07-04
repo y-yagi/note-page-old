@@ -97,7 +97,7 @@ class App extends Component<Props, State> {
       panes.push({
         menuItem: page.name,
         render: () => (
-          <Tab.Pane>
+          <Tab.Pane className="Tab-body">
             <Button
               type="submit"
               floated="right"
