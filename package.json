@@ -25,7 +25,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "pretty": "yarn prettier src/**/*.css src/**/*.tsx src/*.tsx --write"
+    "pretty": "yarn prettier src/**/*.css src/**/*.tsx src/*.tsx --write",
+    "pretty-check": "yarn prettier src/**/*.css src/**/*.tsx src/*.tsx --check"
   },
   "eslintConfig": {
     "extends": "react-app"
