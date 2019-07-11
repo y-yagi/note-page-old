@@ -142,7 +142,10 @@ class App extends Component<Props, State> {
         </Header>
         <Divider hidden section />
         <Segment>
-          <Tab panes={panes} />
+          <Tab
+            panes={panes}
+            menu={{ pointing: true, className: "Tab-wrapped" }}
+          />
         </Segment>
         <Divider hidden section />
         <PageForm auth={this.props.auth} pageID={selectedPageID} />
