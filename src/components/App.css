@@ -27,6 +27,12 @@
   word-wrap: break-word;
 }
 
+.Tab-wrapped {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
