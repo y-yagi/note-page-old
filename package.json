@@ -7,7 +7,7 @@
     "@types/node": "12.6.8",
     "@types/react": "16.8.24",
     "@types/react-dom": "16.8.5",
-    "auth0-js": "^9.11.2",
+    "auth0-js": "^9.11.3",
     "firebase": "^6.3.4",
     "interweave": "^11.1.0",
     "interweave-autolink": "^3.0.1",
