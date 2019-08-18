@@ -1,5 +1,6 @@
 import Auth from "../auth/Auth";
 import React, { Component } from "react";
+import TextareaAutosize from "react-textarea-autosize";
 import { Button, Form, TextArea } from "semantic-ui-react";
 
 interface Props {
@@ -85,7 +86,7 @@ class PageForm extends Component<Props, State> {
         </Form.Field>
         <Form.Field required>
           <label>Content</label>
-          <TextArea
+          <TextareaAutosize
             placeholder="Content"
             required
             value={content}
