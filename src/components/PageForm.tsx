@@ -1,7 +1,7 @@
 import Auth from "../auth/Auth";
 import React, { Component } from "react";
 import TextareaAutosize from "react-textarea-autosize";
-import { Button, Form, TextArea } from "semantic-ui-react";
+import { Button, Form } from "semantic-ui-react";
 
 interface Props {
   auth: Auth;
