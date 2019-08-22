@@ -26,6 +26,7 @@ class PageForm extends Component<Props, State> {
     this.handleChangeName = this.handleChangeName.bind(this);
     this.handleChangeContent = this.handleChangeContent.bind(this);
     this.onSubmitPage = this.onSubmitPage.bind(this);
+    this.scrollToBottom = this.scrollToBottom.bind(this);
   }
 
   handleChangeName(event) {
@@ -34,6 +35,10 @@ class PageForm extends Component<Props, State> {
 
   handleChangeContent(event) {
     this.setState({ content: event.target.value });
+  }
+
+  scrollToBottom(_) {
+    window.scrollTo(0, document.body.scrollHeight);
   }
 
   componentDidUpdate(prevProps) {
@@ -91,6 +96,7 @@ class PageForm extends Component<Props, State> {
             required
             value={content}
             onChange={this.handleChangeContent}
+            onHeightChange={this.scrollToBottom}
           />
         </Form.Field>
         <Button type="submit">{action}</Button>
