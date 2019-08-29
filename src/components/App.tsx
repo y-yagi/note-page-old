@@ -32,6 +32,7 @@ interface State {
   selectedPageID: string;
   cancelConfirm: boolean;
   loading: boolean;
+  tabActiveIndex: number;
 }
 
 class App extends Component<Props, State> {
@@ -39,7 +40,8 @@ class App extends Component<Props, State> {
     pages: [],
     selectedPageID: "",
     cancelConfirm: false,
-    loading: true
+    loading: true,
+    tabActiveIndex: 0
   };
 
   unsubscribe: firebase.Unsubscribe;
@@ -52,6 +54,7 @@ class App extends Component<Props, State> {
     this.handleDestroyConfirm = this.handleDestroyConfirm.bind(this);
     this.handleDestroyCancel = this.handleDestroyCancel.bind(this);
     this.handleEdit = this.handleEdit.bind(this);
+    this.handleTabChange = this.handleTabChange.bind(this);
   }
 
   componentDidMount() {
@@ -64,7 +67,12 @@ class App extends Component<Props, State> {
         if (snapshot.size) {
           snapshot.forEach(doc => pages.push({ ...doc.data(), uid: doc.id }));
         }
-        this.setState({ pages: pages, selectedPageID: "", loading: false });
+        this.setState({
+          pages: pages,
+          selectedPageID: "",
+          loading: false,
+          tabActiveIndex: 0
+        });
       });
   }
 
@@ -89,8 +97,18 @@ class App extends Component<Props, State> {
     this.setState({ selectedPageID: id });
   }
 
+  handleTabChange(e, data) {
+    this.setState({ tabActiveIndex: data.activeIndex });
+  }
+
   render() {
-    let { loading, pages, selectedPageID, cancelConfirm } = this.state;
+    let {
+      loading,
+      pages,
+      selectedPageID,
+      cancelConfirm,
+      tabActiveIndex
+    } = this.state;
     let panes = [];
 
     pages.forEach(page =>
@@ -145,6 +163,8 @@ class App extends Component<Props, State> {
           <Tab
             panes={panes}
             menu={{ pointing: true, className: "Tab-wrapped" }}
+            activeIndex={tabActiveIndex}
+            onTabChange={this.handleTabChange}
           />
         </Segment>
         <Divider hidden section />
