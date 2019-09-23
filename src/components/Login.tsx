@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Container,
   Dimmer,
@@ -17,52 +17,42 @@ interface State {
   loading: boolean;
 }
 
-class Login extends Component<Props, State> {
-  readonly state: State = {
-    loading: true
-  };
+function Login(props: Props) {
+  const [loading, setLoading] = useState(true);
 
-  componentDidMount() {
-    this.doLogin();
+  useEffect(() => {
+    doLogin();
+  });
+
+  function login() {
+    props.auth.login();
   }
 
-  login() {
-    this.props.auth.login();
-  }
-
-  doLogin() {
-    this.props.auth.firebase.auth.getRedirectResult().then(authResult => {
+  function doLogin() {
+    props.auth.firebase.auth.getRedirectResult().then(authResult => {
       if (authResult.user != null) {
-        this.props.auth.handleAuthentication(authResult);
+        props.auth.handleAuthentication(authResult);
       } else {
-        this.setState({ loading: false });
+        setLoading(false);
       }
     });
   }
 
-  render() {
-    let { loading } = this.state;
-
-    return (
-      <Container text className="Login-container">
-        <Header as="h2" icon textAlign="center" color="grey">
-          <Header.Content>NotePage</Header.Content>
-          <Dimmer active={loading}>
-            <Loader inverted>Loading...</Loader>
-          </Dimmer>
-          <Form className="Login-form">
-            <Button
-              id="qsLoginBtn"
-              className="btn-margin"
-              onClick={this.login.bind(this)}
-            >
-              Log In
-            </Button>
-          </Form>
-        </Header>
-      </Container>
-    );
-  }
+  return (
+    <Container text className="Login-container">
+      <Header as="h2" icon textAlign="center" color="grey">
+        <Header.Content>NotePage</Header.Content>
+        <Dimmer active={loading}>
+          <Loader inverted>Loading...</Loader>
+        </Dimmer>
+        <Form className="Login-form">
+          <Button id="qsLoginBtn" className="btn-margin" onClick={login}>
+            Log In
+          </Button>
+        </Form>
+      </Header>
+    </Container>
+  );
 }
 
 export default Login;
