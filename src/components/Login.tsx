@@ -24,11 +24,11 @@ function Login(props: Props) {
     doLogin();
   });
 
-  function login() {
+  function login(): void {
     props.auth.login();
   }
 
-  function doLogin() {
+  function doLogin(): void {
     props.auth.firebase.auth.getRedirectResult().then(authResult => {
       if (authResult.user != null) {
         props.auth.handleAuthentication(authResult);

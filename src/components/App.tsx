@@ -27,13 +27,6 @@ interface Page {
 interface Props {
   auth: Auth;
 }
-interface State {
-  pages: Array<Page>;
-  selectedPageID: string;
-  cancelConfirm: boolean;
-  loading: boolean;
-  tabActiveIndex: number;
-}
 
 function App(props: Props) {
   const [pages, setPages] = useState([]);
@@ -68,20 +61,20 @@ function App(props: Props) {
       });
   }
 
-  function handleDestroy(id) {
+  function handleDestroy(id: string): void {
     setCancelConfirm(false);
     props.auth.firebase.page(id).delete();
   }
 
-  function handleDestroyConfirm() {
+  function handleDestroyConfirm(): void {
     setCancelConfirm(true);
   }
 
-  function handleDestroyCancel() {
+  function handleDestroyCancel(): void {
     setCancelConfirm(false);
   }
 
-  function handleEdit(id) {
+  function handleEdit(id: string): void {
     setSelectedPageID(id);
   }
 

@@ -33,19 +33,19 @@ function PageForm(props: Props) {
     }
   }
 
-  function handleChangeName(event) {
+  function handleChangeName(event): void {
     setName(event.target.value);
   }
 
-  function handleChangeContent(event) {
+  function handleChangeContent(event): void {
     setContent(event.target.value);
   }
 
-  function scrollToBottom(_) {
+  function scrollToBottom(_): void {
     window.scrollTo(0, document.body.scrollHeight);
   }
 
-  function onSubmitPage(event) {
+  function onSubmitPage(event): void {
     const data = {
       name: name,
       content: content,
