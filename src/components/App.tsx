@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
 import Interweave from "interweave";
 import { UrlMatcher } from "interweave-autolink";
@@ -35,80 +35,61 @@ interface State {
   tabActiveIndex: number;
 }
 
-class App extends Component<Props, State> {
-  readonly state: State = {
-    pages: [],
-    selectedPageID: "",
-    cancelConfirm: false,
-    loading: true,
-    tabActiveIndex: 0
-  };
+function App(props: Props) {
+  const [pages, setPages] = useState([]);
+  const [selectedPageID, setSelectedPageID] = useState("");
+  const [cancelConfirm, setCancelConfirm] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [tabActiveIndex, setTabActiveIndex] = useState(0);
 
-  unsubscribe: firebase.Unsubscribe;
+  let unsubscribe: firebase.Unsubscribe;
 
-  constructor(props) {
-    super(props);
+  useEffect(() => {
+    fetchPages();
 
-    this.unsubscribe = null;
-    this.handleDestroy = this.handleDestroy.bind(this);
-    this.handleDestroyConfirm = this.handleDestroyConfirm.bind(this);
-    this.handleDestroyCancel = this.handleDestroyCancel.bind(this);
-    this.handleEdit = this.handleEdit.bind(this);
-    this.handleTabChange = this.handleTabChange.bind(this);
-  }
+    return function cleanup() {
+      unsubscribe();
+    };
+  });
 
-  componentDidMount() {
-    this.unsubscribe = this.props.auth.firebase
+  async function fetchPages() {
+    unsubscribe = props.auth.firebase
       .pages()
-      .where("userId", "==", this.props.auth.userID())
+      .where("userId", "==", props.auth.userID())
       .orderBy("createdAt", "desc")
       .onSnapshot(snapshot => {
         let pages = [];
         if (snapshot.size) {
           snapshot.forEach(doc => pages.push({ ...doc.data(), uid: doc.id }));
         }
-        this.setState({
-          pages: pages,
-          selectedPageID: "",
-          loading: false,
-          tabActiveIndex: 0
-        });
+
+        setPages(pages);
+        setLoading(false);
       });
   }
 
-  componentWillUnmount() {
-    this.unsubscribe();
+  function handleDestroy(id) {
+    setCancelConfirm(false);
+    props.auth.firebase.page(id).delete();
   }
 
-  handleDestroy(id) {
-    this.setState({ cancelConfirm: false });
-    this.props.auth.firebase.page(id).delete();
+  function handleDestroyConfirm() {
+    setCancelConfirm(true);
   }
 
-  handleDestroyConfirm() {
-    this.setState({ cancelConfirm: true });
+  function handleDestroyCancel() {
+    setCancelConfirm(false);
   }
 
-  handleDestroyCancel() {
-    this.setState({ cancelConfirm: false });
+  function handleEdit(id) {
+    setSelectedPageID(id);
   }
 
-  handleEdit(id) {
-    this.setState({ selectedPageID: id });
+  function handleTabChange(e, data) {
+    setTabActiveIndex(data.activeIndex);
   }
 
-  handleTabChange(e, data) {
-    this.setState({ tabActiveIndex: data.activeIndex });
-  }
-
-  render() {
-    let {
-      loading,
-      pages,
-      selectedPageID,
-      cancelConfirm,
-      tabActiveIndex
-    } = this.state;
+  function panes(): Array<string> {
     let panes = [];
 
     pages.forEach(page =>
@@ -121,21 +102,21 @@ class App extends Component<Props, State> {
               floated="right"
               color="red"
               size="mini"
-              onClick={() => this.handleDestroyConfirm()}
+              onClick={() => handleDestroyConfirm()}
             >
               Destroy
             </Button>
             <Confirm
               open={cancelConfirm}
-              onCancel={() => this.handleDestroyCancel()}
-              onConfirm={() => this.handleDestroy(page.uid)}
+              onCancel={() => handleDestroyCancel()}
+              onConfirm={() => handleDestroy(page.uid)}
             />
             <Button
               type="submit"
               floated="right"
               color="blue"
               size="mini"
-              onClick={() => this.handleEdit(page.uid)}
+              onClick={() => handleEdit(page.uid)}
             >
               Edit
             </Button>
@@ -149,29 +130,31 @@ class App extends Component<Props, State> {
       })
     );
 
-    return (
-      <Container className="main-container">
-        <Header as="h2" icon textAlign="center" color="grey">
-          <Icon name="write" circular />
-          <Header.Content>NotePage</Header.Content>
-          <Dimmer active={loading}>
-            <Loader inverted>Loading...</Loader>
-          </Dimmer>
-        </Header>
-        <Divider hidden section />
-        <Segment>
-          <Tab
-            panes={panes}
-            menu={{ pointing: true, className: "Tab-wrapped" }}
-            activeIndex={tabActiveIndex}
-            onTabChange={this.handleTabChange}
-          />
-        </Segment>
-        <Divider hidden section />
-        <PageForm auth={this.props.auth} pageID={selectedPageID} />
-      </Container>
-    );
+    return panes;
   }
+
+  return (
+    <Container className="main-container">
+      <Header as="h2" icon textAlign="center" color="grey">
+        <Icon name="write" circular />
+        <Header.Content>NotePage</Header.Content>
+        <Dimmer active={loading}>
+          <Loader inverted>Loading...</Loader>
+        </Dimmer>
+      </Header>
+      <Divider hidden section />
+      <Segment>
+        <Tab
+          panes={panes()}
+          menu={{ pointing: true, className: "Tab-wrapped" }}
+          activeIndex={tabActiveIndex}
+          onTabChange={handleTabChange}
+        />
+      </Segment>
+      <Divider hidden section />
+      <PageForm auth={props.auth} pageID={selectedPageID} />
+    </Container>
+  );
 }
 
 export default App;
