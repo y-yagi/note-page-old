@@ -40,10 +40,10 @@ function App(props: Props) {
   useEffect(() => {
     fetchPages();
 
-    return function cleanup() {
+    return () => {
       unsubscribe();
     };
-  });
+  }, []);
 
   async function fetchPages() {
     unsubscribe = props.auth.firebase
