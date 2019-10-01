@@ -5468,12 +5468,11 @@ interweave-autolink@^3.0.1:
     "@types/react" "*"
     prop-types "^15.7.2"
 
-interweave@^11.1.0:
-  version "11.1.0"
-  resolved "https://registry.yarnpkg.com/interweave/-/interweave-11.1.0.tgz#1da968783f248990c814219a16536fb67e49a2f8"
-  integrity sha512-Y4x3K9eYnhgHCLcQls1gyLn0DXDtuMOdArmpjdgrM+Y/kt6IOYOa6AxbqhRPxh+3UaSZZ53APf4SAJIDqn9ORg==
+interweave@^11.2.0:
+  version "11.2.0"
+  resolved "https://registry.yarnpkg.com/interweave/-/interweave-11.2.0.tgz#d0571cdc1002ef08f3b1f64c458bd320780c50c3"
+  integrity sha512-33h9LOXbT52tMin3IyLBPcd5RbiwroP/Sxr0OamnJJU7A/jh0XtZKGvdcSNKYRC7sLZuDk+ZJ2XVrmkcMU5i6w==
   dependencies:
-    "@types/prop-types" "*"
     "@types/react" "*"
     escape-html "^1.0.3"
     prop-types "^15.7.2"
