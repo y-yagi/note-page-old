@@ -5470,12 +5470,11 @@ internal-ip@^4.2.0:
     default-gateway "^4.2.0"
     ipaddr.js "^1.9.0"
 
-interweave-autolink@^3.0.1:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/interweave-autolink/-/interweave-autolink-3.0.1.tgz#7a9db3cb56d98f6c442b9ffb825606b11c2e27fd"
-  integrity sha512-NoaKf7kJptTWu2RET/Grb61oe79lxLlRqX9aApaS7maVqMu2iz4fo1uK3JKi+y2FHd/a60Jbwu+SgcF2/vifMw==
+interweave-autolink@^3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/interweave-autolink/-/interweave-autolink-3.0.2.tgz#51250928f132782ef9e79dd9b833eb60604a10c6"
+  integrity sha512-NPw+1bhItv72I3ef291HsPySlX+KUrAoRx+jFA5VDNsuzBh563EJzqTq56fIJ0yaeytNFJhO0CAXmr9larympw==
   dependencies:
-    "@types/prop-types" "*"
     "@types/react" "*"
     prop-types "^15.7.2"
 

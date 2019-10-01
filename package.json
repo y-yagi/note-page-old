@@ -10,7 +10,7 @@
     "auth0-js": "^9.11.3",
     "firebase": "^7.0.0",
     "interweave": "^11.2.0",
-    "interweave-autolink": "^3.0.1",
+    "interweave-autolink": "^3.0.2",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "react-router": "^5.1.2",
