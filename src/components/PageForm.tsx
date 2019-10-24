@@ -12,11 +12,12 @@ function PageForm(props: Props) {
   const [name, setName] = useState("");
   const [content, setContent] = useState("");
   const [action, setAction] = useState("create");
+  const [updatedAt, setUpdatedAt] = useState(0);
 
   useEffect(() => {
     fetchPage(props.pageID);
     // eslint-disable-next-line
-  }, [props.pageID]);
+  }, [props.pageID, updatedAt]);
 
   async function fetchPage(id: string) {
     if (id !== "") {
@@ -59,6 +60,9 @@ function PageForm(props: Props) {
       props.auth.firebase.page(props.pageID).set(data);
     }
 
+    const d = new Date();
+
+    setUpdatedAt(d.getTime());
     setName("");
     setContent("");
     setAction("create");
