@@ -51,7 +51,7 @@ function PageForm(props: Props) {
       name: name,
       content: content,
       userId: props.auth.userID(),
-      createdAt: props.auth.firebase.timestamp()
+      updatedAt: props.auth.firebase.timestamp()
     };
 
     if (props.pageID === "") {

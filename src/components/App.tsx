@@ -49,7 +49,7 @@ function App(props: Props) {
     unsubscribe = props.auth.firebase
       .pages()
       .where("userId", "==", props.auth.userID())
-      .orderBy("createdAt", "desc")
+      .orderBy("updatedAt", "desc")
       .onSnapshot(snapshot => {
         let pages = [];
         if (snapshot.size) {
