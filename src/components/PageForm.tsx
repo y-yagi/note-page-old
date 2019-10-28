@@ -57,7 +57,7 @@ function PageForm(props: Props) {
     if (props.pageID === "") {
       props.auth.firebase.pages().add(data);
     } else {
-      props.auth.firebase.page(props.pageID).set(data);
+      props.auth.firebase.page(props.pageID).update(data);
     }
 
     const d = new Date();
