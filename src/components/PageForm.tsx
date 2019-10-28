@@ -55,6 +55,7 @@ function PageForm(props: Props) {
     };
 
     if (props.pageID === "") {
+      data["createdAt"] = data["updatedAt"];
       props.auth.firebase.pages().add(data);
     } else {
       props.auth.firebase.page(props.pageID).update(data);
