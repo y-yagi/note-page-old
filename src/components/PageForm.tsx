@@ -51,13 +51,14 @@ function PageForm(props: Props) {
       name: name,
       content: content,
       userId: props.auth.userID(),
-      createdAt: props.auth.firebase.timestamp()
+      updatedAt: props.auth.firebase.timestamp()
     };
 
     if (props.pageID === "") {
+      data["createdAt"] = data["updatedAt"];
       props.auth.firebase.pages().add(data);
     } else {
-      props.auth.firebase.page(props.pageID).set(data);
+      props.auth.firebase.page(props.pageID).update(data);
     }
 
     const d = new Date();
