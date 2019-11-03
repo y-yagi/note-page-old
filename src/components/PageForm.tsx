@@ -42,6 +42,12 @@ function PageForm(props: Props) {
     setContent(event.target.value);
   }
 
+  function handleCancel(): void {
+    setName("");
+    setContent("");
+    setAction("create");
+  }
+
   function scrollToBottom(_): void {
     window.scrollTo(0, document.body.scrollHeight);
   }
@@ -92,7 +98,12 @@ function PageForm(props: Props) {
           onHeightChange={scrollToBottom}
         />
       </Form.Field>
-      <Button type="submit">{action}</Button>
+      <Button as="a" onClick={() => handleCancel()}>
+        cancel
+      </Button>
+      <Button type="submit" color="blue">
+        {action}
+      </Button>
     </Form>
   );
 }
