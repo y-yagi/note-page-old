@@ -6,6 +6,7 @@ import { Button, Form } from "semantic-ui-react";
 interface Props {
   auth: Auth;
   pageID: string;
+  onUpdatePage: () => void;
 }
 
 function PageForm(props: Props) {
@@ -13,6 +14,7 @@ function PageForm(props: Props) {
   const [content, setContent] = useState("");
   const [action, setAction] = useState("create");
   const [updatedAt, setUpdatedAt] = useState(0);
+  const onUpdatePage = props.onUpdatePage;
 
   useEffect(() => {
     fetchPage(props.pageID);
@@ -73,6 +75,7 @@ function PageForm(props: Props) {
     setName("");
     setContent("");
     setAction("create");
+    onUpdatePage();
 
     event.preventDefault();
   }

@@ -64,6 +64,7 @@ function App(props: Props) {
   function handleDestroy(id: string): void {
     setCancelConfirm(false);
     props.auth.firebase.page(id).delete();
+    setTabActiveIndex(0);
   }
 
   function handleDestroyConfirm(): void {
@@ -80,6 +81,10 @@ function App(props: Props) {
 
   function handleTabChange(e, data) {
     setTabActiveIndex(data.activeIndex);
+  }
+
+  function onUpdatePage(): void {
+    setTabActiveIndex(0);
   }
 
   function panes() {
@@ -145,7 +150,11 @@ function App(props: Props) {
         />
       </Segment>
       <Divider hidden section />
-      <PageForm auth={props.auth} pageID={selectedPageID} />
+      <PageForm
+        auth={props.auth}
+        pageID={selectedPageID}
+        onUpdatePage={onUpdatePage}
+      />
     </Container>
   );
 }
