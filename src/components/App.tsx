@@ -82,7 +82,7 @@ function App(props: Props) {
     setTabActiveIndex(data.activeIndex);
   }
 
-  function panes(): Array<string> {
+  function panes() {
     let panes = [];
 
     pages.forEach(page =>
