@@ -1,18 +1,10 @@
 import history from "../history";
-import Firebase from "../firebase/firebase";
 
 export default class Auth {
-  firebase = new Firebase();
-
   constructor() {
-    this.login = this.login.bind(this);
     this.logout = this.logout.bind(this);
     this.handleAuthentication = this.handleAuthentication.bind(this);
     this.isAuthenticated = this.isAuthenticated.bind(this);
-  }
-
-  login() {
-    this.firebase.auth.signInWithRedirect(this.firebase.googleProvider);
   }
 
   handleAuthentication(authResult) {

@@ -4,6 +4,7 @@ import Interweave from "interweave";
 import { UrlMatcher } from "interweave-autolink";
 import PageForm from "./PageForm";
 import Auth from "../auth/Auth";
+import Firebase from "../firebase/firebase";
 import {
   Container,
   Confirm,
@@ -26,6 +27,7 @@ interface Page {
 
 interface Props {
   auth: Auth;
+  firebase: Firebase;
 }
 
 function App(props: Props) {
@@ -46,7 +48,7 @@ function App(props: Props) {
   }, []);
 
   async function fetchPages() {
-    unsubscribe = props.auth.firebase
+    unsubscribe = props.firebase
       .pages()
       .where("userId", "==", props.auth.userID())
       .orderBy("updatedAt", "desc")
@@ -63,7 +65,7 @@ function App(props: Props) {
 
   function handleDestroy(id: string): void {
     setCancelConfirm(false);
-    props.auth.firebase.page(id).delete();
+    props.firebase.page(id).delete();
     setTabActiveIndex(0);
   }
 
@@ -152,6 +154,7 @@ function App(props: Props) {
       <Divider hidden section />
       <PageForm
         auth={props.auth}
+        firebase={props.firebase}
         pageID={selectedPageID}
         onUpdatePage={onUpdatePage}
       />
