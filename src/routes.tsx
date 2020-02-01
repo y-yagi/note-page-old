@@ -3,9 +3,11 @@ import { Redirect, Route, Router, Switch } from "react-router-dom";
 import App from "./components/App";
 import Login from "./components/Login";
 import Auth from "./auth/Auth";
+import Firebase from "./firebase/firebase";
 import history from "./history";
 
 const auth = new Auth();
+const firebase = new Firebase();
 
 const PrivateRoute = ({ component: Component, auth, ...rest }) => (
   <Route
@@ -13,7 +15,7 @@ const PrivateRoute = ({ component: Component, auth, ...rest }) => (
     render={props =>
       auth.isAuthenticated() ? (
         <div>
-          <Component auth={auth} {...props} />
+          <Component auth={auth} firebase={firebase} {...props} />
         </div>
       ) : (
         <Redirect to="/login" />
@@ -30,9 +32,17 @@ export const makeMainRoutes = () => {
           <Switch>
             <Route
               path="/login"
-              render={props => <Login auth={auth} {...props} />}
+              render={props => (
+                <Login auth={auth} firebase={firebase} {...props} />
+              )}
             />
-            <PrivateRoute extract path="/" component={App} auth={auth} />
+            <PrivateRoute
+              extract
+              path="/"
+              component={App}
+              auth={auth}
+              firebase={firebase}
+            />
           </Switch>
         </div>
       </Router>
