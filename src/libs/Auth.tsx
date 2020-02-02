@@ -28,8 +28,8 @@ export default class Auth {
   }
 
   login() {
-      const provider = new firebase.auth.GoogleAuthProvider();
-      this.app.auth().signInWithRedirect(provider);
+    const provider = new firebase.auth.GoogleAuthProvider();
+    this.app.auth().signInWithRedirect(provider);
   }
 
   logout() {

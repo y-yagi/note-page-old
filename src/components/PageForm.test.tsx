@@ -12,13 +12,14 @@ const app = firebase.initializeTestApp({
   auth: { uid: "alice", email: "alice@example.com" }
 });
 
-beforeEach(() => {
-});
+beforeEach(() => {});
 
 it("renders welcome message", () => {
-  console.log(app.firestore)
+  console.log(app.firestore);
   const auth = new Auth(app);
   const pageRepository = new PageRepository(app);
-  const { getByText } = render(<PageForm auth={auth} pageRepository={pageRepository} />);
+  const { getByText } = render(
+    <PageForm auth={auth} pageRepository={pageRepository} />
+  );
   expect(getByText("Page Name")).toBeInTheDocument();
 });
