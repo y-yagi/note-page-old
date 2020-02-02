@@ -1,11 +1,24 @@
+import app from "firebase/app";
+import "firebase/auth";
 import history from "../history";
 
 export default class Auth {
+  auth: firebase.auth.Auth;
+  googleProvider: firebase.auth.GoogleAuthProvider;
+
   constructor() {
+    this.auth = app.auth();
+    this.googleProvider = new app.auth.GoogleAuthProvider();
+
     this.logout = this.logout.bind(this);
     this.handleAuthentication = this.handleAuthentication.bind(this);
     this.isAuthenticated = this.isAuthenticated.bind(this);
   }
+
+  login = () => this.auth.signInWithRedirect(this.googleProvider);
+  doSignInWithGoogle = () => this.auth.signInWithPopup(this.googleProvider);
+  doSignOut = () => this.auth.signOut();
+  userID = () => localStorage.getItem("user_id");
 
   handleAuthentication(authResult) {
     // 7 days
@@ -28,7 +41,7 @@ export default class Auth {
     return new Date().getTime() < expiresAt;
   }
 
-  userID() {
-    return localStorage.getItem("user_id");
+  getRedirectResult() {
+    return this.auth.getRedirectResult();
   }
 }

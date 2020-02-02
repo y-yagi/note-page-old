@@ -1,12 +1,12 @@
-import Auth from "../auth/Auth";
-import Firebase from "../firebase/firebase";
+import Auth from "../libs/Auth";
+import PageRespository from "../libs/PageRepository";
 import React, { useState, useEffect } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import { Button, Form } from "semantic-ui-react";
 
 interface Props {
   auth: Auth;
-  firebase: Firebase;
+  pageRepository: PageRespository;
   pageID: string;
   onUpdatePage: () => void;
 }
@@ -25,7 +25,7 @@ function PageForm(props: Props) {
 
   async function fetchPage(id: string) {
     if (id !== "") {
-      props.firebase
+      props.pageRepository
         .page(id)
         .get()
         .then(snapshot => {
@@ -61,14 +61,14 @@ function PageForm(props: Props) {
       name: name,
       content: content,
       userId: props.auth.userID(),
-      updatedAt: props.firebase.timestamp()
+      updatedAt: props.pageRepository.timestamp()
     };
 
     if (props.pageID === "") {
       data["createdAt"] = data["updatedAt"];
-      props.firebase.pages().add(data);
+      props.pageRepository.pages().add(data);
     } else {
-      props.firebase.page(props.pageID).update(data);
+      props.pageRepository.page(props.pageID).update(data);
     }
 
     const d = new Date();

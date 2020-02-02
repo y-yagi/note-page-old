@@ -2,12 +2,14 @@ import React, { StrictMode } from "react";
 import { Redirect, Route, Router, Switch } from "react-router-dom";
 import App from "./components/App";
 import Login from "./components/Login";
-import Auth from "./auth/Auth";
-import Firebase from "./firebase/firebase";
+import Auth from "./libs/Auth";
+import PageRepository from "./libs/PageRepository";
 import history from "./history";
+import { initFirebase } from "./libs/firebase";
 
+initFirebase();
 const auth = new Auth();
-const firebase = new Firebase();
+const pageRepositrory = new PageRepository();
 
 const PrivateRoute = ({ component: Component, auth, ...rest }) => (
   <Route
@@ -15,7 +17,7 @@ const PrivateRoute = ({ component: Component, auth, ...rest }) => (
     render={props =>
       auth.isAuthenticated() ? (
         <div>
-          <Component auth={auth} firebase={firebase} {...props} />
+          <Component auth={auth} pageRepository={pageRepositrory} {...props} />
         </div>
       ) : (
         <Redirect to="/login" />
@@ -32,16 +34,14 @@ export const makeMainRoutes = () => {
           <Switch>
             <Route
               path="/login"
-              render={props => (
-                <Login auth={auth} firebase={firebase} {...props} />
-              )}
+              render={props => <Login auth={auth} {...props} />}
             />
             <PrivateRoute
               extract
               path="/"
               component={App}
               auth={auth}
-              firebase={firebase}
+              pageRepository={pageRepositrory}
             />
           </Switch>
         </div>
