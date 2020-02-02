@@ -2,27 +2,23 @@ import React from "react";
 import ReactDOM from "react-dom";
 import PageForm from "./PageForm";
 import * as firebase from "@firebase/testing";
-import Auth from "../auth/Auth";
+import Auth from "../libs/Auth";
+import PageRepository from "../libs/PageRepository";
 import { render } from "@testing-library/react";
 
 const FIRESTORE_PROJECT_ID = "my-test-project";
-
-beforeEach(() => {
-  firebase.initializeTestApp({
-    projectId: FIRESTORE_PROJECT_ID,
-    auth: { uid: "alice", email: "alice@example.com" }
-  });
+const app = firebase.initializeTestApp({
+  projectId: FIRESTORE_PROJECT_ID,
+  auth: { uid: "alice", email: "alice@example.com" }
 });
 
-it("renders without crashing", () => {
-  const div = document.createElement("div");
-  const auth = new Auth();
-  ReactDOM.render(<PageForm auth={auth} firebase={firebase} />, div);
-  ReactDOM.unmountComponentAtNode(div);
+beforeEach(() => {
 });
 
 it("renders welcome message", () => {
-  const auth = new Auth();
-  const { getByText } = render(<PageForm auth={auth} firebase={firebase} />);
-  expect(getByText("Learn React")).toBeInTheDocument();
+  console.log(app.firestore)
+  const auth = new Auth(app);
+  const pageRepository = new PageRepository(app);
+  const { getByText } = render(<PageForm auth={auth} pageRepository={pageRepository} />);
+  expect(getByText("Page Name")).toBeInTheDocument();
 });

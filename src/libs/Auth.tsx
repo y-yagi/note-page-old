@@ -1,21 +1,20 @@
-import app from "firebase/app";
+import firebase from "firebase";
 import "firebase/auth";
+import App from "firebase/app";
 import history from "../history";
 
 export default class Auth {
-  googleProvider: firebase.auth.GoogleAuthProvider;
+  app: firebase.app.App;
 
-  constructor() {
-    this.googleProvider = new app.auth.GoogleAuthProvider();
+  constructor(app: firebase.app.App) {
+    this.app = app;
 
     this.logout = this.logout.bind(this);
     this.handleAuthentication = this.handleAuthentication.bind(this);
     this.isAuthenticated = this.isAuthenticated.bind(this);
   }
 
-  login = () => app.auth().signInWithRedirect(this.googleProvider);
-  doSignInWithGoogle = () => app.auth().signInWithPopup(this.googleProvider);
-  doSignOut = () => app.auth().signOut();
+  doSignOut = () => this.app.auth().signOut();
   userID = () => localStorage.getItem("user_id");
 
   handleAuthentication(authResult) {
@@ -26,6 +25,11 @@ export default class Auth {
     localStorage.setItem("user_id", authResult.user.uid);
     localStorage.setItem("expires_at", expiresAt);
     history.replace("/");
+  }
+
+  login() {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      this.app.auth().signInWithRedirect(provider);
   }
 
   logout() {
@@ -40,6 +44,6 @@ export default class Auth {
   }
 
   getRedirectResult() {
-    return this.auth.getRedirectResult();
+    return this.app.auth().getRedirectResult();
   }
 }

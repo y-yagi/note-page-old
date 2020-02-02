@@ -9,5 +9,5 @@ const config = {
 };
 
 export const initFirebase = () => {
-  app.initializeApp(config);
+  return app.initializeApp(config);
 };
