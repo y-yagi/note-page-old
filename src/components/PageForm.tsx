@@ -91,6 +91,7 @@ function PageForm(props: Props) {
           required
           value={name}
           onChange={handleChangeName}
+          data-testid="pagename"
         />
       </Form.Field>
       <Form.Field required>
@@ -101,6 +102,7 @@ function PageForm(props: Props) {
           value={content}
           onChange={handleChangeContent}
           onHeightChange={scrollToBottom}
+          data-testid="pagecontent"
         />
       </Form.Field>
       <Button as="a" onClick={() => handleCancel()}>
