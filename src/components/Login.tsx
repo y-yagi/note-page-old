@@ -8,12 +8,10 @@ import {
   Form
 } from "semantic-ui-react";
 import "./Login.css";
-import Auth from "../auth/Auth";
-import Firebase from "../firebase/firebase";
+import Auth from "../libs/Auth";
 
 interface Props {
   auth: Auth;
-  firebase: Firebase;
 }
 interface State {
   loading: boolean;
@@ -27,11 +25,11 @@ function Login(props: Props) {
   });
 
   function login(): void {
-    props.firebase.login();
+    props.auth.login();
   }
 
   function doLogin(): void {
-    props.firebase.auth.getRedirectResult().then(authResult => {
+    props.auth.getRedirectResult().then(authResult => {
       if (authResult.user != null) {
         props.auth.handleAuthentication(authResult);
       } else {
