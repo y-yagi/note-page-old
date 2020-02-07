@@ -9,7 +9,7 @@
     "@types/react": "16.9.19",
     "@types/react-dom": "16.9.5",
     "auth0-js": "^9.12.2",
-    "firebase": "^7.7.0",
+    "firebase": "^7.8.0",
     "interweave": "^11.2.0",
     "interweave-autolink": "^3.0.2",
     "react": "^16.12.0",
