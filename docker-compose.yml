@@ -1,10 +1,13 @@
 version: '2'
 services:
-  firestore:
+  firebase:
     build: containers/firebase/
+    container_name: firebase
     ports:
       - '8080:8080'
     volumes:
-      - .:/usr/src/app
+      - ./:/usr/src/app
     working_dir: /usr/src/app
+    environment:
+      - FIREBASE_TOKEN=${FIREBASE_TOKEN}
     command: 'firebase emulators:start'
