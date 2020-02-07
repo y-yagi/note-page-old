@@ -8,6 +8,12 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
+    - name: Build container
+      run: docker-compose build
+    - name: Start container
+      run: docker-compose up -d
+      env:
+        FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
     - name: Use Node.js
       uses: actions/setup-node@v1
       with:
@@ -21,3 +27,7 @@ jobs:
       run: yarn install
     - name: Run prettier
       run: yarn pretty-check
+    - name: Run test
+      run: yarn test --forceExit
+      env:
+        CI: true

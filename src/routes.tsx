@@ -7,9 +7,9 @@ import PageRepository from "./libs/PageRepository";
 import history from "./history";
 import { initFirebase } from "./libs/firebase";
 
-initFirebase();
-const auth = new Auth();
-const pageRepositrory = new PageRepository();
+const app = initFirebase();
+const auth = new Auth(app);
+const pageRepositrory = new PageRepository(app);
 
 const PrivateRoute = ({ component: Component, auth, ...rest }) => (
   <Route
