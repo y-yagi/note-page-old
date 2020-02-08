@@ -12,10 +12,8 @@ const app = firebase.initializeTestApp({
   auth: { uid: "alice", email: "alice@example.com" }
 });
 
-afterEach(() => {
-  firebase.clearFirestoreData({
-    projectId: FIRESTORE_PROJECT_ID
-  });
+afterAll(() => {
+  Promise.all(firebase.apps().map(app => app.delete()));
 });
 
 it("renders welcome message", () => {
