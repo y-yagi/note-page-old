@@ -4,7 +4,7 @@ import PageForm from "./PageForm";
 import * as firebase from "@firebase/testing";
 import Auth from "../libs/Auth";
 import PageRepository from "../libs/PageRepository";
-import { render, fireEvent } from "@testing-library/react";
+import { act, render, fireEvent } from "@testing-library/react";
 
 const FIRESTORE_PROJECT_ID = "my-test-project";
 const app = firebase.initializeTestApp({
@@ -16,6 +16,10 @@ afterEach(() => {
   firebase.clearFirestoreData({
     projectId: FIRESTORE_PROJECT_ID
   });
+});
+
+afterAll(() => {
+  Promise.all(firebase.apps().map(app => app.delete()));
 });
 
 it("renders welcome message", () => {
@@ -52,5 +56,42 @@ it("register new page", async () => {
     const data = doc.data();
     expect(data.name).toBe("new page");
     expect(data.content).toBe("Content");
+  });
+});
+
+it("update a exist page", async () => {
+  const auth = new Auth(app);
+  const pageRepository = new PageRepository(app);
+  const page = await pageRepository
+    .pages()
+    .add({ name: "new1", content: "content1" });
+
+  const { getByText, getByTestId, findByText } = render(
+    <PageForm
+      auth={auth}
+      pageRepository={pageRepository}
+      pageID={page.id}
+      onUpdatePage={() => console.log("call onUpdatePage")}
+    />
+  );
+
+  await findByText("update");
+
+  const name = getByTestId("pagename");
+  fireEvent.change(name, { target: { value: "update page" } });
+
+  const content = getByTestId("pagecontent");
+  fireEvent.change(content, { target: { value: "Updateed Content" } });
+  findByText("Updateed Content");
+
+  act(() => {
+    fireEvent.click(getByText("update"));
+  });
+
+  const resp = await pageRepository.pages().get();
+  resp.forEach(doc => {
+    const data = doc.data();
+    expect(data.name).toBe("update page");
+    expect(data.content).toBe("Updateed Content");
   });
 });

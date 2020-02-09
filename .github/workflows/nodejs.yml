@@ -28,6 +28,6 @@ jobs:
     - name: Run prettier
       run: yarn pretty-check
     - name: Run test
-      run: yarn test --forceExit
+      run: yarn test
       env:
         CI: true
