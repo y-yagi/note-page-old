@@ -22,7 +22,7 @@ afterAll(() => {
   Promise.all(firebase.apps().map(app => app.delete()));
 });
 
-it("renders welcome message", () => {
+it("renders component", () => {
   const auth = new Auth(app);
   const pageRepository = new PageRepository(app);
   const { getByText } = render(
