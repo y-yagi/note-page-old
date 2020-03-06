@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./App.css";
 import Interweave from "interweave";
 import { UrlMatcher } from "interweave-autolink";
@@ -37,18 +37,18 @@ function App(props: Props) {
   const [loading, setLoading] = useState(true);
   const [tabActiveIndex, setTabActiveIndex] = useState(0);
 
-  let unsubscribe: firebase.Unsubscribe;
+  const unsubscribeRef = useRef<firebase.Unsubscribe>();
 
   useEffect(() => {
     fetchPages();
 
     return () => {
-      unsubscribe();
+      unsubscribeRef.current();
     };
   }, []);
 
   async function fetchPages() {
-    unsubscribe = props.pageRepository
+    unsubscribeRef.current = props.pageRepository
       .pages()
       .where("userId", "==", props.auth.userID())
       .orderBy("updatedAt", "desc")
