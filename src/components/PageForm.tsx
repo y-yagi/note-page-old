@@ -20,24 +20,22 @@ function PageForm(props: Props) {
   const onUpdatePage = props.onUpdatePage;
 
   useEffect(() => {
-    fetchPage(props.pageID);
-    // eslint-disable-next-line
-  }, [props.pageID, updatedAt]);
+    (async (id: string) => {
+      if (id !== "") {
+        props.pageRepository
+          .page(id)
+          .get()
+          .then(snapshot => {
+            const page = snapshot.data();
 
-  async function fetchPage(id: string) {
-    if (id !== "") {
-      props.pageRepository
-        .page(id)
-        .get()
-        .then(snapshot => {
-          const page = snapshot.data();
+            setName(page.name);
+            setContent(page.content);
+            setAction("update");
+          });
+      }
+    })(props.pageID);
+  }, [props.pageID, props.pageRepository, updatedAt]);
 
-          setName(page.name);
-          setContent(page.content);
-          setAction("update");
-        });
-    }
-  }
 
   function handleCancel(): void {
     setName("");
