@@ -1,6 +1,5 @@
-import firebase from "firebase";
+import * as firebase from "firebase/app";
 import "firebase/auth";
-import App from "firebase/app";
 import history from "../history";
 
 export default class Auth {
