@@ -1,10 +1,9 @@
-import { useState, ChangeEvent } from "react";
+import { useState } from "react";
 
 type InputProperty = {
   value: string
   onChange: any
 }
-
 
 export function useInput(initialiValue : string) : [InputProperty, Function] {
   const [value, setValue] = useState(initialiValue);
