@@ -40,28 +40,27 @@ function App(props: Props) {
   const unsubscribeRef = useRef<firebase.Unsubscribe>();
 
   useEffect(() => {
-    fetchPages();
+    (async () => {
+      unsubscribeRef.current = props.pageRepository
+        .pages()
+        .where("userId", "==", props.auth.userID())
+        .orderBy("updatedAt", "desc")
+        .onSnapshot(snapshot => {
+          let pages = [];
+          if (snapshot.size) {
+            snapshot.forEach(doc => pages.push({ ...doc.data(), uid: doc.id }));
+          }
+
+          setPages(pages);
+          setLoading(false);
+        });
+    })();
 
     return () => {
       unsubscribeRef.current();
     };
-  }, []);
+  }, [props.auth, props.pageRepository]);
 
-  async function fetchPages() {
-    unsubscribeRef.current = props.pageRepository
-      .pages()
-      .where("userId", "==", props.auth.userID())
-      .orderBy("updatedAt", "desc")
-      .onSnapshot(snapshot => {
-        let pages = [];
-        if (snapshot.size) {
-          snapshot.forEach(doc => pages.push({ ...doc.data(), uid: doc.id }));
-        }
-
-        setPages(pages);
-        setLoading(false);
-      });
-  }
 
   function handleDestroy(id: string): void {
     setCancelConfirm(false);
