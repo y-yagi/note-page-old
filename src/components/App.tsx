@@ -61,7 +61,6 @@ function App(props: Props) {
     };
   }, [props.auth, props.pageRepository]);
 
-
   function handleDestroy(id: string): void {
     setSelectedPageID("");
     setCancelConfirm(false);

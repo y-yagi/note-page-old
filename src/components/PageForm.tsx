@@ -32,11 +32,10 @@ function PageForm(props: Props) {
             setAction("update");
           });
       } else {
-        handleCancel()
+        handleCancel();
       }
     })(props.pageID);
   }, [props.pageID, updatedAt, props.pageRepository]);
-
 
   function handleChangeName(event): void {
     setName(event.target.value);
