@@ -63,6 +63,7 @@ function App(props: Props) {
 
 
   function handleDestroy(id: string): void {
+    setSelectedPageID("");
     setCancelConfirm(false);
     props.pageRepository.page(id).delete();
     setTabActiveIndex(0);

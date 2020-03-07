@@ -1,5 +1,4 @@
 import Auth from "../libs/Auth";
-import { useInput } from "../hooks/use_input";
 import PageRespository from "../libs/PageRepository";
 import React, { useState, useEffect } from "react";
 import TextareaAutosize from "react-textarea-autosize";
@@ -13,8 +12,8 @@ interface Props {
 }
 
 function PageForm(props: Props) {
-  const [nameProps, setName] = useInput("");
-  const [contentProps, setContent] = useInput("");
+  const [name, setName] = useState("");
+  const [content, setContent] = useState("");
   const [action, setAction] = useState("create");
   const [updatedAt, setUpdatedAt] = useState(0);
   const onUpdatePage = props.onUpdatePage;
@@ -32,10 +31,20 @@ function PageForm(props: Props) {
             setContent(page.content);
             setAction("update");
           });
+      } else {
+        handleCancel()
       }
     })(props.pageID);
-  }, [props.pageID, props.pageRepository, updatedAt]);
+  }, [props.pageID, updatedAt, props.pageRepository]);
 
+
+  function handleChangeName(event): void {
+    setName(event.target.value);
+  }
+
+  function handleChangeContent(event): void {
+    setContent(event.target.value);
+  }
 
   function handleCancel(): void {
     setName("");
@@ -49,8 +58,8 @@ function PageForm(props: Props) {
 
   function onSubmitPage(event): void {
     const data = {
-      name: nameProps.value,
-      content: contentProps.value,
+      name: name,
+      content: content,
       userId: props.auth.userID(),
       updatedAt: props.pageRepository.timestamp()
     };
@@ -78,18 +87,20 @@ function PageForm(props: Props) {
       <Form.Field required>
         <label>Page Name</label>
         <input
-          {...nameProps}
           placeholder="Name"
           required
+          value={name}
+          onChange={handleChangeName}
           data-testid="pagename"
         />
       </Form.Field>
       <Form.Field required>
         <label>Content</label>
         <TextareaAutosize
-          {...contentProps}
           placeholder="Content"
           required
+          value={content}
+          onChange={handleChangeContent}
           onHeightChange={scrollToBottom}
           data-testid="pagecontent"
         />
