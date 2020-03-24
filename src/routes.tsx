@@ -14,7 +14,7 @@ const pageRepositrory = new PageRepository(app);
 const PrivateRoute = ({ component: Component, auth, ...rest }) => (
   <Route
     {...rest}
-    render={props =>
+    render={(props) =>
       auth.isAuthenticated() ? (
         <div>
           <Component auth={auth} pageRepository={pageRepositrory} {...props} />
@@ -34,7 +34,7 @@ export const makeMainRoutes = () => {
           <Switch>
             <Route
               path="/login"
-              render={props => <Login auth={auth} {...props} />}
+              render={(props) => <Login auth={auth} {...props} />}
             />
             <PrivateRoute
               extract

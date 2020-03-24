@@ -15,7 +15,7 @@ import {
   Header,
   Button,
   Segment,
-  Tab
+  Tab,
 } from "semantic-ui-react";
 
 interface Page {
@@ -45,10 +45,12 @@ function App(props: Props) {
         .pages()
         .where("userId", "==", props.auth.userID())
         .orderBy("updatedAt", "desc")
-        .onSnapshot(snapshot => {
+        .onSnapshot((snapshot) => {
           let pages = [];
           if (snapshot.size) {
-            snapshot.forEach(doc => pages.push({ ...doc.data(), uid: doc.id }));
+            snapshot.forEach((doc) =>
+              pages.push({ ...doc.data(), uid: doc.id })
+            );
           }
 
           setPages(pages);
@@ -91,7 +93,7 @@ function App(props: Props) {
   function panes() {
     let panes = [];
 
-    pages.forEach(page =>
+    pages.forEach((page) =>
       panes.push({
         menuItem: page.name,
         render: () => (
@@ -125,7 +127,7 @@ function App(props: Props) {
               newWindow
             />
           </Tab.Pane>
-        )
+        ),
       })
     );
 

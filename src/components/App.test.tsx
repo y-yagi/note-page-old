@@ -9,17 +9,17 @@ import { act, render, fireEvent } from "@testing-library/react";
 const FIRESTORE_PROJECT_ID = "my-test-project";
 const app = firebase.initializeTestApp({
   projectId: FIRESTORE_PROJECT_ID,
-  auth: { uid: "alice", email: "alice@example.com" }
+  auth: { uid: "alice", email: "alice@example.com" },
 });
 
 afterEach(() => {
   firebase.clearFirestoreData({
-    projectId: FIRESTORE_PROJECT_ID
+    projectId: FIRESTORE_PROJECT_ID,
   });
 });
 
 afterAll(() => {
-  Promise.all(firebase.apps().map(app => app.delete()));
+  Promise.all(firebase.apps().map((app) => app.delete()));
 });
 
 it("renders component", () => {

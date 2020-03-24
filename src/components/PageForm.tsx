@@ -24,7 +24,7 @@ function PageForm(props: Props) {
         props.pageRepository
           .page(id)
           .get()
-          .then(snapshot => {
+          .then((snapshot) => {
             const page = snapshot.data();
 
             setName(page.name);
@@ -60,7 +60,7 @@ function PageForm(props: Props) {
       name: name,
       content: content,
       userId: props.auth.userID(),
-      updatedAt: props.pageRepository.timestamp()
+      updatedAt: props.pageRepository.timestamp(),
     };
 
     if (props.pageID === "") {
@@ -82,7 +82,7 @@ function PageForm(props: Props) {
   }
 
   return (
-    <Form onSubmit={event => onSubmitPage(event)}>
+    <Form onSubmit={(event) => onSubmitPage(event)}>
       <Form.Field required>
         <label>Page Name</label>
         <input
