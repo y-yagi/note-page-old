@@ -5,7 +5,7 @@ import {
   Loader,
   Header,
   Button,
-  Form
+  Form,
 } from "semantic-ui-react";
 import "./Login.css";
 import Auth from "../libs/Auth";
@@ -29,7 +29,7 @@ function Login(props: Props) {
   }
 
   function doLogin(): void {
-    props.auth.getRedirectResult().then(authResult => {
+    props.auth.getRedirectResult().then((authResult) => {
       if (authResult.user != null) {
         props.auth.handleAuthentication(authResult);
       } else {

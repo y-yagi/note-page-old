@@ -49,6 +49,6 @@
   },
   "devDependencies": {
     "@firebase/testing": "^0.16.14",
-    "prettier": "^1.19.1"
+    "prettier": "^2.0.1"
   }
 }
