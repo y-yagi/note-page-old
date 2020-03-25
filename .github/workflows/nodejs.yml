@@ -18,11 +18,8 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: '12.x'
-    - name: Cache
-      uses: actions/cache@v1
-      with:
-        path: node_modules
-        key: v1-dependencies-{{ checksum "package.json" }}
+    - name: Show node version
+      run: node -v
     - name: Run yarn install
       run: yarn install
     - name: Run prettier
