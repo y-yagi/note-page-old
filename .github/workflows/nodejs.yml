@@ -18,6 +18,8 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: '12.x'
+    - name: Show node version
+      run: node -v
     - name: Cache
       uses: actions/cache@v1
       with:
