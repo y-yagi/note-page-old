@@ -20,11 +20,6 @@ jobs:
         node-version: '12.x'
     - name: Show node version
       run: node -v
-    - name: Cache
-      uses: actions/cache@v1
-      with:
-        path: node_modules
-        key: v1-dependencies-{{ checksum "package.json" }}
     - name: Run yarn install
       run: yarn install
     - name: Run prettier
