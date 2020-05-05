@@ -9,6 +9,7 @@ interface Props {
   pageRepository: PageRespository;
   pageID: string;
   onUpdatePage: () => void;
+  onCancelPage: () => void;
 }
 
 function PageForm(props: Props) {
@@ -17,6 +18,7 @@ function PageForm(props: Props) {
   const [action, setAction] = useState("create");
   const [updatedAt, setUpdatedAt] = useState(0);
   const onUpdatePage = props.onUpdatePage;
+  const onCancelPage = props.onCancelPage;
 
   useEffect(() => {
     (async (id: string) => {
@@ -32,7 +34,7 @@ function PageForm(props: Props) {
             setAction("update");
           });
       } else {
-        handleCancel();
+        cleanupFormForCreate();
       }
     })(props.pageID);
   }, [props.pageID, updatedAt, props.pageRepository]);
@@ -46,6 +48,11 @@ function PageForm(props: Props) {
   }
 
   function handleCancel(): void {
+    cleanupFormForCreate();
+    onCancelPage();
+  }
+
+  function cleanupFormForCreate(): void {
     setName("");
     setContent("");
     setAction("create");
