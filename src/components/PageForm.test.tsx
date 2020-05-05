@@ -72,6 +72,7 @@ it("update a exist page", async () => {
       pageRepository={pageRepository}
       pageID={page.id}
       onUpdatePage={() => console.log("call onUpdatePage")}
+      onCancelPage={() => console.log("call onCancelPage")}
     />
   );
 
