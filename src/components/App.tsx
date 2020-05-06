@@ -36,6 +36,7 @@ function App(props: Props) {
   const [cancelConfirm, setCancelConfirm] = useState(false);
   const [loading, setLoading] = useState(true);
   const [tabActiveIndex, setTabActiveIndex] = useState(0);
+  const [showForm, setShowForm] = useState(false);
 
   const unsubscribeRef = useRef<firebase.Unsubscribe>();
 
@@ -78,16 +79,28 @@ function App(props: Props) {
     setCancelConfirm(false);
   }
 
+  function handleCreate(): void {
+    setSelectedPageID("");
+    setShowForm(true);
+  }
+
   function handleEdit(id: string): void {
+    setShowForm(true);
     setSelectedPageID(id);
   }
 
   function handleTabChange(e, data) {
+    setShowForm(false);
     setTabActiveIndex(data.activeIndex);
   }
 
   function onUpdatePage(): void {
     setTabActiveIndex(0);
+    setShowForm(false);
+  }
+
+  function onCancelPage(): void {
+    setShowForm(false);
   }
 
   function panes() {
@@ -144,6 +157,9 @@ function App(props: Props) {
         </Dimmer>
       </Header>
       <Divider hidden section />
+      <Button as="a" color="blue" onClick={() => handleCreate()}>
+        Create a new page
+      </Button>
       <Segment>
         <Tab
           panes={panes()}
@@ -153,12 +169,17 @@ function App(props: Props) {
         />
       </Segment>
       <Divider hidden section />
-      <PageForm
-        auth={props.auth}
-        pageRepository={props.pageRepository}
-        pageID={selectedPageID}
-        onUpdatePage={onUpdatePage}
-      />
+      {showForm ? (
+        <PageForm
+          auth={props.auth}
+          pageRepository={props.pageRepository}
+          pageID={selectedPageID}
+          onUpdatePage={onUpdatePage}
+          onCancelPage={onCancelPage}
+        />
+      ) : (
+        ""
+      )}
     </Container>
   );
 }
