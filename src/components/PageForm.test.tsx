@@ -26,7 +26,13 @@ it("renders component", () => {
   const auth = new Auth(app);
   const pageRepository = new PageRepository(app);
   const { getByText } = render(
-    <PageForm auth={auth} pageRepository={pageRepository} pageID={""} />
+    <PageForm
+      auth={auth}
+      pageRepository={pageRepository}
+      pageID={""}
+      onUpdatePage={() => console.log("call onUpdatePage")}
+      onCancelPage={() => console.log("call onCancelPage")}
+    />
   );
   expect(getByText("Page Name")).toBeInTheDocument();
 });
@@ -40,6 +46,7 @@ it("register new page", async () => {
       pageRepository={pageRepository}
       pageID={""}
       onUpdatePage={() => console.log("call onUpdatePage")}
+      onCancelPage={() => console.log("call onCancelPage")}
     />
   );
 

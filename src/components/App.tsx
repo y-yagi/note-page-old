@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, SyntheticEvent } from "react";
 import "./App.css";
 import Interweave from "interweave";
 import { UrlMatcher } from "interweave-autolink";
@@ -21,8 +21,8 @@ import {
 interface Page {
   id: string;
   name: string;
-  uid: string;
   content: string;
+  uid: string;
 }
 
 interface Props {
@@ -31,7 +31,7 @@ interface Props {
 }
 
 function App(props: Props) {
-  const [pages, setPages] = useState([]);
+  const [pages, setPages] = useState<Page[]>([]);
   const [selectedPageID, setSelectedPageID] = useState("");
   const [cancelConfirm, setCancelConfirm] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -47,11 +47,13 @@ function App(props: Props) {
         .where("userId", "==", props.auth.userID())
         .orderBy("updatedAt", "desc")
         .onSnapshot((snapshot) => {
-          let pages = [];
+          let pages: Page[] = [];
           if (snapshot.size) {
-            snapshot.forEach((doc) =>
-              pages.push({ ...doc.data(), uid: doc.id })
-            );
+            snapshot.forEach((doc) => {
+              let page = { ...doc.data() } as Page;
+              page.uid = doc.id;
+              pages.push(page);
+            });
           }
 
           setPages(pages);
@@ -89,7 +91,7 @@ function App(props: Props) {
     setSelectedPageID(id);
   }
 
-  function handleTabChange(e, data) {
+  function handleTabChange(e: SyntheticEvent, data: any) {
     setShowForm(false);
     setTabActiveIndex(data.activeIndex);
   }
@@ -104,7 +106,7 @@ function App(props: Props) {
   }
 
   function panes() {
-    let panes = [];
+    let panes: any[] = [];
 
     pages.forEach((page) =>
       panes.push({

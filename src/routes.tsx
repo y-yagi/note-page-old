@@ -11,13 +11,23 @@ const app = initFirebase();
 const auth = new Auth(app);
 const pageRepositrory = new PageRepository(app);
 
-const PrivateRoute = ({ component: Component, auth, ...rest }) => (
+const PrivateRoute = ({
+  component: Component,
+  auth,
+  path,
+  pageRepository,
+}: {
+  component: Function;
+  auth: Auth;
+  path: string;
+  pageRepository: PageRepository;
+}) => (
   <Route
-    {...rest}
+    path={path}
     render={(props) =>
       auth.isAuthenticated() ? (
         <div>
-          <Component auth={auth} pageRepository={pageRepositrory} {...props} />
+          <Component auth={auth} pageRepository={pageRepository} {...props} />
         </div>
       ) : (
         <Redirect to="/login" />
@@ -37,10 +47,9 @@ export const makeMainRoutes = () => {
               render={(props) => <Login auth={auth} {...props} />}
             />
             <PrivateRoute
-              extract
-              path="/"
               component={App}
               auth={auth}
+              path="/"
               pageRepository={pageRepositrory}
             />
           </Switch>

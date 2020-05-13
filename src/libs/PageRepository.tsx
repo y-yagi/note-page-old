@@ -10,7 +10,7 @@ export default class PageRepository {
     this.db = this.app.firestore();
   }
 
-  page = (uid) => this.db.doc(`pages/${uid}`);
+  page = (uid: string) => this.db.doc(`pages/${uid}`);
   pages = () => this.db.collection("pages");
   timestamp = () => firebase.firestore.FieldValue.serverTimestamp();
 }
