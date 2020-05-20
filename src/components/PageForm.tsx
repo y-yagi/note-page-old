@@ -1,6 +1,6 @@
 import Auth from "../libs/Auth";
 import PageRespository from "../libs/PageRepository";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, SyntheticEvent } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import { Button, Form } from "semantic-ui-react";
 
@@ -39,12 +39,12 @@ function PageForm(props: Props) {
     })(props.pageID);
   }, [props.pageID, updatedAt, props.pageRepository]);
 
-  function handleChangeName(event): void {
-    setName(event.target.value);
+  function handleChangeName(event: SyntheticEvent): void {
+    setName((event.target as HTMLInputElement).value);
   }
 
-  function handleChangeContent(event): void {
-    setContent(event.target.value);
+  function handleChangeContent(event: SyntheticEvent): void {
+    setContent((event.target as HTMLInputElement).value);
   }
 
   function handleCancel(): void {
@@ -58,22 +58,23 @@ function PageForm(props: Props) {
     setAction("create");
   }
 
-  function scrollToBottom(_): void {
+  function scrollToBottom(): void {
     window.scrollTo(0, document.body.scrollHeight);
   }
 
-  function onSubmitPage(event): void {
+  function onSubmitPage(event: SyntheticEvent): void {
     const data = {
       name: name,
       content: content,
       userId: props.auth.userID(),
+      createdAt: props.pageRepository.timestamp(),
       updatedAt: props.pageRepository.timestamp(),
     };
 
     if (props.pageID === "") {
-      data["createdAt"] = data["updatedAt"];
       props.pageRepository.pages().add(data);
     } else {
+      data["createdAt"] = null;
       props.pageRepository.page(props.pageID).update(data);
     }
 

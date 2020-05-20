@@ -16,7 +16,7 @@ export default class Auth {
   doSignOut = () => this.app.auth().signOut();
   userID = () => localStorage.getItem("user_id");
 
-  handleAuthentication(authResult) {
+  handleAuthentication(authResult: any) {
     // 7 days
     let expiresAt = JSON.stringify(
       new Date().getTime() + 1000 * 60 * 60 * 24 * 7
