@@ -43,7 +43,9 @@ function PageForm(props: Props) {
     setName((event.target as HTMLInputElement).value);
   }
 
-  function handleChangeContent(event: React.FormEvent<HTMLTextAreaElement>): void {
+  function handleChangeContent(
+    event: React.FormEvent<HTMLTextAreaElement>
+  ): void {
     setContent((event.target as HTMLInputElement).value);
   }
 
@@ -63,7 +65,7 @@ function PageForm(props: Props) {
   }
 
   function onSubmitPage(event: React.FormEvent<HTMLFormElement>): void {
-     let data = {
+    let data = {
       name: name,
       content: content,
       userId: props.auth.userID(),
