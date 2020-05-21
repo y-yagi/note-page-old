@@ -50,8 +50,7 @@ function App(props: Props) {
           let pages: Page[] = [];
           if (snapshot.size) {
             snapshot.forEach((doc) => {
-              let page = { ...doc.data() } as Page;
-              page.uid = doc.id;
+              let page = { uid:  doc.id, ...doc.data() } as Page;
               pages.push(page);
             });
           }
