@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, SyntheticEvent } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./App.css";
 import Interweave from "interweave";
 import { UrlMatcher } from "interweave-autolink";
@@ -90,7 +90,7 @@ function App(props: Props) {
     setSelectedPageID(id);
   }
 
-  function handleTabChange(e: SyntheticEvent, data: any) {
+  function handleTabChange(data: any) {
     setShowForm(false);
     setTabActiveIndex(data.activeIndex);
   }
