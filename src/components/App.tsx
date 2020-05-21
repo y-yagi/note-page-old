@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, SyntheticEvent } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./App.css";
 import Interweave from "interweave";
 import { UrlMatcher } from "interweave-autolink";
@@ -16,6 +16,7 @@ import {
   Button,
   Segment,
   Tab,
+  TabProps,
 } from "semantic-ui-react";
 
 interface Page {
@@ -50,8 +51,7 @@ function App(props: Props) {
           let pages: Page[] = [];
           if (snapshot.size) {
             snapshot.forEach((doc) => {
-              let page = { ...doc.data() } as Page;
-              page.uid = doc.id;
+              let page = { uid: doc.id, ...doc.data() } as Page;
               pages.push(page);
             });
           }
@@ -91,9 +91,9 @@ function App(props: Props) {
     setSelectedPageID(id);
   }
 
-  function handleTabChange(e: SyntheticEvent, data: any) {
+  function handleTabChange(data: TabProps) {
     setShowForm(false);
-    setTabActiveIndex(data.activeIndex);
+    setTabActiveIndex(data.activeIndex as number);
   }
 
   function onUpdatePage(): void {

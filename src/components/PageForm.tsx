@@ -1,6 +1,6 @@
 import Auth from "../libs/Auth";
 import PageRespository from "../libs/PageRepository";
-import React, { useState, useEffect, SyntheticEvent } from "react";
+import React, { useState, useEffect } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import { Button, Form } from "semantic-ui-react";
 
@@ -39,11 +39,13 @@ function PageForm(props: Props) {
     })(props.pageID);
   }, [props.pageID, updatedAt, props.pageRepository]);
 
-  function handleChangeName(event: SyntheticEvent): void {
+  function handleChangeName(event: React.FormEvent<HTMLInputElement>): void {
     setName((event.target as HTMLInputElement).value);
   }
 
-  function handleChangeContent(event: SyntheticEvent): void {
+  function handleChangeContent(
+    event: React.FormEvent<HTMLTextAreaElement>
+  ): void {
     setContent((event.target as HTMLInputElement).value);
   }
 
@@ -62,8 +64,8 @@ function PageForm(props: Props) {
     window.scrollTo(0, document.body.scrollHeight);
   }
 
-  function onSubmitPage(event: SyntheticEvent): void {
-    const data = {
+  function onSubmitPage(event: React.FormEvent<HTMLFormElement>): void {
+    let data = {
       name: name,
       content: content,
       userId: props.auth.userID(),
