@@ -16,6 +16,7 @@ import {
   Button,
   Segment,
   Tab,
+  TabProps,
 } from "semantic-ui-react";
 
 interface Page {
@@ -90,9 +91,9 @@ function App(props: Props) {
     setSelectedPageID(id);
   }
 
-  function handleTabChange(data: any) {
+  function handleTabChange(data: TabProps) {
     setShowForm(false);
-    setTabActiveIndex(data.activeIndex);
+    setTabActiveIndex(data.activeIndex as number);
   }
 
   function onUpdatePage(): void {
