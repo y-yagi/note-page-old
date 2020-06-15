@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@sentry/browser": "^5.15.5",
+    "@sentry/browser": "^5.17.0",
     "@testing-library/jest-dom": "^5.9.0",
     "@testing-library/react": "^9.5.0",
     "auth0-js": "^9.13.2",
