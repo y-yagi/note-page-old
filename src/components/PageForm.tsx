@@ -2,7 +2,7 @@ import Auth from "../libs/Auth";
 import PageRespository from "../libs/PageRepository";
 import React, { useState, useEffect } from "react";
 import TextareaAutosize from "react-textarea-autosize";
-import { Button, Form } from "semantic-ui-react";
+import { Button, Form, Dimmer, Loader } from "semantic-ui-react";
 
 interface Props {
   auth: Auth;
@@ -17,12 +17,14 @@ function PageForm(props: Props) {
   const [content, setContent] = useState("");
   const [action, setAction] = useState("create");
   const [updatedAt, setUpdatedAt] = useState(0);
+  const [loading, setLoading] = useState(false);
   const onUpdatePage = props.onUpdatePage;
   const onCancelPage = props.onCancelPage;
 
   useEffect(() => {
     (async (id: string) => {
       if (id !== "") {
+        setLoading(true);
         props.pageRepository
           .page(id)
           .get()
@@ -32,6 +34,7 @@ function PageForm(props: Props) {
             setName(page.name);
             setContent(page.content);
             setAction("update");
+            setLoading(false);
           });
       } else {
         cleanupFormForCreate();
@@ -92,35 +95,40 @@ function PageForm(props: Props) {
   }
 
   return (
-    <Form onSubmit={(event) => onSubmitPage(event)}>
-      <Form.Field required>
-        <label>Page Name</label>
-        <input
-          placeholder="Name"
-          required
-          value={name}
-          onChange={handleChangeName}
-          data-testid="pagename"
-        />
-      </Form.Field>
-      <Form.Field required>
-        <label>Content</label>
-        <TextareaAutosize
-          placeholder="Content"
-          required
-          value={content}
-          onChange={handleChangeContent}
-          onHeightChange={scrollToBottom}
-          data-testid="pagecontent"
-        />
-      </Form.Field>
-      <Button as="a" onClick={() => handleCancel()}>
-        cancel
-      </Button>
-      <Button type="submit" color="blue">
-        {action}
-      </Button>
-    </Form>
+    <span>
+      <Dimmer active={loading}>
+        <Loader inverted>Loading...</Loader>
+      </Dimmer>
+      <Form onSubmit={(event) => onSubmitPage(event)}>
+        <Form.Field required>
+          <label>Page Name</label>
+          <input
+            placeholder="Name"
+            required
+            value={name}
+            onChange={handleChangeName}
+            data-testid="pagename"
+          />
+        </Form.Field>
+        <Form.Field required>
+          <label>Content</label>
+          <TextareaAutosize
+            placeholder="Content"
+            required
+            value={content}
+            onChange={handleChangeContent}
+            onHeightChange={scrollToBottom}
+            data-testid="pagecontent"
+          />
+        </Form.Field>
+        <Button as="a" onClick={() => handleCancel()}>
+          cancel
+        </Button>
+        <Button type="submit" color="blue">
+          {action}
+        </Button>
+      </Form>
+    </span>
   );
 }
 
