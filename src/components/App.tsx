@@ -5,6 +5,7 @@ import { UrlMatcher } from "interweave-autolink";
 import PageForm from "./PageForm";
 import Auth from "../libs/Auth";
 import PageRepostitory from "../libs/PageRepository";
+import { History } from "history";
 import {
   Container,
   Confirm,
@@ -15,6 +16,7 @@ import {
   Header,
   Button,
   Segment,
+  Select,
   Tab,
   TabProps,
 } from "semantic-ui-react";
@@ -29,6 +31,7 @@ interface Page {
 interface Props {
   auth: Auth;
   pageRepository: PageRepostitory;
+  history: History;
 }
 
 function App(props: Props) {
@@ -40,6 +43,16 @@ function App(props: Props) {
   const [showForm, setShowForm] = useState(false);
 
   const unsubscribeRef = useRef<firebase.Unsubscribe>();
+
+  const selectOptions = [
+    { key: "af", value: "af", text: "Afghanistan" },
+    { key: "ax", value: "ax", text: "Aland Islands" },
+    {
+      key: "create_new_note_book",
+      value: "create_new_note_book",
+      text: "Create a new note book",
+    },
+  ];
 
   useEffect(() => {
     (async () => {
@@ -105,6 +118,12 @@ function App(props: Props) {
     setShowForm(false);
   }
 
+  function onSelectChange(_event: any, data: any): void {
+    if (data.value === "create_new_note_book") {
+      props.history.replace("/notebooks/new")
+    }
+  }
+
   function panes() {
     let panes: any[] = [];
 
@@ -153,10 +172,16 @@ function App(props: Props) {
     <Container className="main-container">
       <Header as="h2" icon textAlign="center" color="grey">
         <Icon name="write" circular />
-        <Header.Content>NotePage</Header.Content>
         <Dimmer active={loading}>
           <Loader inverted>Loading...</Loader>
         </Dimmer>
+      </Header>
+      <Header as="h3" icon textAlign="center" color="grey">
+        <Select
+          options={selectOptions}
+          defaultValue="af"
+          onChange={onSelectChange}
+        />
       </Header>
       <Divider hidden section />
       <Button as="a" color="blue" onClick={() => handleCreate()}>
