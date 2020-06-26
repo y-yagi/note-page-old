@@ -5,6 +5,7 @@ import { UrlMatcher } from "interweave-autolink";
 import PageForm from "./PageForm";
 import Auth from "../libs/Auth";
 import PageRepostitory from "../libs/PageRepository";
+import NoteBookRepostitory from "../libs/NoteBookRepository";
 import { History } from "history";
 import {
   Container,
@@ -31,6 +32,7 @@ interface Page {
 interface Props {
   auth: Auth;
   pageRepository: PageRepostitory;
+  noteBookRepository: NoteBookRepostitory;
   history: History;
 }
 
@@ -120,7 +122,7 @@ function App(props: Props) {
 
   function onSelectChange(_event: any, data: any): void {
     if (data.value === "create_new_note_book") {
-      props.history.replace("/notebooks/new")
+      props.history.push("/notebooks/new")
     }
   }
 

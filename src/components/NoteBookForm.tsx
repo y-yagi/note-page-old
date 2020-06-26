@@ -1,13 +1,12 @@
 import Auth from "../libs/Auth";
-import PageRespository from "../libs/PageRepository";
-import React, { useState, useEffect } from "react";
+import NoteBookRepository from "../libs/NoteBookRepository";
+import React, { useState } from "react";
+import { History } from "history";
 import "./App.css";
 import {
   Container,
   Divider,
   Icon,
-  Dimmer,
-  Loader,
   Header,
   Button,
   Form,
@@ -15,39 +14,39 @@ import {
 
 interface Props {
   auth: Auth;
-  pageRepository: PageRespository;
+  noteBookRepository: NoteBookRepository;
+  history: History;
 }
 
 function NoteBookForm(props: Props) {
   const [name, setName] = useState("");
-  const [loading, setLoading] = useState(false);
 
   function handleChangeName(event: React.FormEvent<HTMLInputElement>): void {
     setName((event.target as HTMLInputElement).value);
   }
 
   function handleCancel(): void {
+      props.history.push("/")
   }
 
   function onSubmitPage(event: React.FormEvent<HTMLFormElement>): void {
     let data = {
       name: name,
       userId: props.auth.userID(),
-      createdAt: props.pageRepository.timestamp(),
-      updatedAt: props.pageRepository.timestamp(),
+      createdAt: props.noteBookRepository.timestamp(),
+      updatedAt: props.noteBookRepository.timestamp(),
     };
 
+    props.noteBookRepository.notebooks().add(data);
     setName("");
     event.preventDefault();
+    props.history.push("/")
   }
 
   return (
     <Container className="main-container">
       <Header as="h2" icon textAlign="center" color="grey">
         <Icon name="write" circular />
-        <Dimmer active={loading}>
-          <Loader inverted>Loading...</Loader>
-        </Dimmer>
       </Header>
       <Divider hidden section />
       <Form onSubmit={(event) => onSubmitPage(event)}>

@@ -8,22 +8,26 @@ import PageRepository from "./libs/PageRepository";
 import history from "./history";
 import { History } from "history";
 import { initFirebase } from "./libs/firebase";
+import NoteBookRepository from "./libs/NoteBookRepository";
 
 const app = initFirebase();
 const auth = new Auth(app);
 const pageRepositrory = new PageRepository(app);
+const noteBookRepository = new NoteBookRepository(app);
 
 const PrivateRoute = ({
   component: Component,
   auth,
   path,
   pageRepository,
+  noteBookRepository,
   history,
 }: {
   component: Function;
   auth: Auth;
   path: string;
   pageRepository: PageRepository;
+  noteBookRepository: NoteBookRepository
   history: History;
 }) => (
   <Route
@@ -31,7 +35,7 @@ const PrivateRoute = ({
     render={(props) =>
       auth.isAuthenticated() ? (
         <div>
-          <Component auth={auth} pageRepository={pageRepository} history={history} {...props} />
+          <Component auth={auth} pageRepository={pageRepository} noteBookRepository={noteBookRepository} history={history} {...props} />
         </div>
       ) : (
         <Redirect to="/login" />
@@ -56,6 +60,7 @@ export const makeMainRoutes = () => {
               path="/notebooks/new"
               history={history}
               pageRepository={pageRepositrory}
+              noteBookRepository={noteBookRepository}
             />
             <PrivateRoute
               component={App}
@@ -63,6 +68,7 @@ export const makeMainRoutes = () => {
               path="/"
               history={history}
               pageRepository={pageRepositrory}
+              noteBookRepository={noteBookRepository}
             />
           </Switch>
         </div>
