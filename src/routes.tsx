@@ -1,7 +1,7 @@
 import React, { StrictMode } from "react";
 import { Redirect, Route, Router, Switch } from "react-router-dom";
 import App from "./components/App";
-import NoteBookForm from "./components/NoteBookForm"
+import NoteBookForm from "./components/NoteBookForm";
 import Login from "./components/Login";
 import Auth from "./libs/Auth";
 import PageRepository from "./libs/PageRepository";
@@ -27,7 +27,7 @@ const PrivateRoute = ({
   auth: Auth;
   path: string;
   pageRepository: PageRepository;
-  noteBookRepository: NoteBookRepository
+  noteBookRepository: NoteBookRepository;
   history: History;
 }) => (
   <Route
@@ -35,7 +35,13 @@ const PrivateRoute = ({
     render={(props) =>
       auth.isAuthenticated() ? (
         <div>
-          <Component auth={auth} pageRepository={pageRepository} noteBookRepository={noteBookRepository} history={history} {...props} />
+          <Component
+            auth={auth}
+            pageRepository={pageRepository}
+            noteBookRepository={noteBookRepository}
+            history={history}
+            {...props}
+          />
         </div>
       ) : (
         <Redirect to="/login" />

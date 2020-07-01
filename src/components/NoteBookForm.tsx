@@ -26,7 +26,7 @@ function NoteBookForm(props: Props) {
   }
 
   function handleCancel(): void {
-      props.history.push("/")
+    props.history.push("/");
   }
 
   function onSubmitPage(event: React.FormEvent<HTMLFormElement>): void {
@@ -40,7 +40,7 @@ function NoteBookForm(props: Props) {
     props.noteBookRepository.notebooks().add(data);
     setName("");
     event.preventDefault();
-    props.history.push("/")
+    props.history.push("/");
   }
 
   return (

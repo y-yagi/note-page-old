@@ -29,6 +29,18 @@ interface Page {
   uid: string;
 }
 
+interface NoteBook {
+  id: string;
+  name: string;
+  uid: string;
+}
+
+interface NoteBookOption {
+  key: string;
+  value: string;
+  text: string;
+}
+
 interface Props {
   auth: Auth;
   pageRepository: PageRepostitory;
@@ -39,47 +51,70 @@ interface Props {
 function App(props: Props) {
   const [pages, setPages] = useState<Page[]>([]);
   const [selectedPageID, setSelectedPageID] = useState("");
+  const [selectedNoteID, setSelectedNoteID] = useState("");
   const [cancelConfirm, setCancelConfirm] = useState(false);
   const [loading, setLoading] = useState(true);
   const [tabActiveIndex, setTabActiveIndex] = useState(0);
   const [showForm, setShowForm] = useState(false);
-
+  const [noteBooks, setNoteBooks] = useState<NoteBook[]>([]);
   const unsubscribeRef = useRef<firebase.Unsubscribe>();
-
-  const selectOptions = [
-    { key: "af", value: "af", text: "Afghanistan" },
-    { key: "ax", value: "ax", text: "Aland Islands" },
-    {
-      key: "create_new_note_book",
-      value: "create_new_note_book",
-      text: "Create a new note book",
-    },
-  ];
+  let selectedNoteName = "default";
+  let defaultNoteID = "";
 
   useEffect(() => {
     (async () => {
-      unsubscribeRef.current = props.pageRepository
-        .pages()
-        .where("userId", "==", props.auth.userID())
-        .orderBy("updatedAt", "desc")
-        .onSnapshot((snapshot) => {
-          let pages: Page[] = [];
-          if (snapshot.size) {
-            for (const doc of snapshot.docs) {
-              let page = { uid: doc.id, ...doc.data() } as Page;
-              pages.push(page);
-            }
-          }
-
-          setPages(pages);
-          setLoading(false);
-        });
+      await fetchNoteBooks();
+      await fetchPages("");
     })();
 
     return () => {
       unsubscribeRef.current();
     };
-  }, [props.auth, props.pageRepository]);
+  }, [props.auth, props.pageRepository, props.noteBookRepository]);
+
+  async function fetchNoteBooks(): Promise<any> {
+    let books: NoteBook[] = [];
+    const noteBookRef = props.noteBookRepository.notebooks();
+    const ref = await noteBookRef
+      .where("userId", "==", props.auth.userID())
+      .orderBy("createdAt", "asc")
+      .get();
+
+    for (const doc of ref.docs) {
+      const book = { uid: doc.id, ...doc.data() } as NoteBook;
+      books.push(book);
+
+      if (book.name === "default") {
+        setSelectedNoteID(book.uid);
+        selectedNoteName = book.name;
+        defaultNoteID = book.uid;
+      }
+    }
+    setNoteBooks(books);
+  }
+
+  async function fetchPages(noteID: string): Promise<any> {
+    if (noteID === "") {
+      noteID = defaultNoteID;
+    }
+    unsubscribeRef.current = props.pageRepository
+      .pages()
+      .where("userId", "==", props.auth.userID())
+      .where("noteBookId", "==", noteID)
+      .orderBy("updatedAt", "desc")
+      .onSnapshot((snapshot) => {
+        let pages: Page[] = [];
+        if (snapshot.size) {
+          for (const doc of snapshot.docs) {
+            let page = { uid: doc.id, ...doc.data() } as Page;
+            pages.push(page);
+          }
+        }
+
+        setPages(pages);
+        setLoading(false);
+      });
+  }
 
   function handleDestroy(id: string): void {
     setSelectedPageID("");
@@ -122,8 +157,33 @@ function App(props: Props) {
 
   function onSelectChange(_event: any, data: any): void {
     if (data.value === "create_new_note_book") {
-      props.history.push("/notebooks/new")
+      props.history.push("/notebooks/new");
     }
+
+    (async () => {
+      var bookID = "";
+      for (const book of noteBooks) {
+        if (book.name === data.value) {
+          setSelectedNoteID(book.uid);
+          bookID = book.uid;
+          selectedNoteName = book.name;
+          break;
+        }
+      }
+      await fetchPages(bookID);
+    })();
+  }
+
+  function noteBooksOptions(): NoteBookOption[] {
+    let options: NoteBookOption[] = [];
+    noteBooks.forEach((book) => {
+      options.push({
+        key: book.uid,
+        value: book.name,
+        text: book.name,
+      });
+    });
+    return options;
   }
 
   function panes() {
@@ -180,9 +240,9 @@ function App(props: Props) {
       </Header>
       <Header as="h3" icon textAlign="center" color="grey">
         <Select
-          options={selectOptions}
-          defaultValue="af"
+          options={noteBooksOptions()}
           onChange={onSelectChange}
+          defaultValue={selectedNoteName}
         />
       </Header>
       <Divider hidden section />
@@ -203,6 +263,7 @@ function App(props: Props) {
           auth={props.auth}
           pageRepository={props.pageRepository}
           pageID={selectedPageID}
+          noteBookID={selectedNoteID}
           onUpdatePage={onUpdatePage}
           onCancelPage={onCancelPage}
         />
