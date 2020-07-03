@@ -30,6 +30,7 @@ it("renders component", () => {
       auth={auth}
       pageRepository={pageRepository}
       pageID={""}
+      noteBookID={"1"}
       onUpdatePage={() => console.log("call onUpdatePage")}
       onCancelPage={() => console.log("call onCancelPage")}
     />
@@ -45,6 +46,7 @@ it("register new page", async () => {
       auth={auth}
       pageRepository={pageRepository}
       pageID={""}
+      noteBookID={"1"}
       onUpdatePage={() => console.log("call onUpdatePage")}
       onCancelPage={() => console.log("call onCancelPage")}
     />
@@ -78,6 +80,7 @@ it("update a exist page", async () => {
       auth={auth}
       pageRepository={pageRepository}
       pageID={page.id}
+      noteBookID={"1"}
       onUpdatePage={() => console.log("call onUpdatePage")}
       onCancelPage={() => console.log("call onCancelPage")}
     />
