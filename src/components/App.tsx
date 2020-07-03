@@ -69,7 +69,9 @@ function App(props: Props) {
     })();
 
     return () => {
-      unsubscribeRef.current();
+      if (typeof unsubscribeRef.current === "function") {
+        unsubscribeRef.current();
+      }
     };
   }, [props.auth, props.pageRepository, props.noteBookRepository]);
 
