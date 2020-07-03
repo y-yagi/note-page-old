@@ -241,7 +241,9 @@ function App(props: Props) {
           onChange={onSelectChange}
           defaultValue={selectedNoteName}
         />
-        <Link to="/notebooks/new">Add</Link>
+        <Button as={Link} color="blue" size="tiny" to="/notebooks/new">
+          Add
+        </Button>
       </Header>
       <Divider hidden section />
       <Button as="a" color="blue" onClick={() => handleCreate()}>
