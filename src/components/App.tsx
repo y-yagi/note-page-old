@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 import "./App.css";
 import Interweave from "interweave";
 import { UrlMatcher } from "interweave-autolink";
@@ -156,10 +157,6 @@ function App(props: Props) {
   }
 
   function onSelectChange(_event: any, data: any): void {
-    if (data.value === "create_new_note_book") {
-      props.history.push("/notebooks/new");
-    }
-
     (async () => {
       var bookID = "";
       for (const book of noteBooks) {
@@ -244,6 +241,7 @@ function App(props: Props) {
           onChange={onSelectChange}
           defaultValue={selectedNoteName}
         />
+        <Link to="/notebooks/new">Add</Link>
       </Header>
       <Divider hidden section />
       <Button as="a" color="blue" onClick={() => handleCreate()}>
