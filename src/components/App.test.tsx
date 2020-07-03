@@ -34,5 +34,5 @@ it("renders component", () => {
       noteBookRepository={noteBookRepository}
     />
   );
-  expect(getByText("NotePage")).toBeInTheDocument();
+  expect(getByText("NoteBooks")).toBeInTheDocument();
 });

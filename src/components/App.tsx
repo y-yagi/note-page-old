@@ -236,6 +236,7 @@ function App(props: Props) {
         </Dimmer>
       </Header>
       <Header as="h3" icon textAlign="center" color="grey">
+        <Header.Content>NoteBooks</Header.Content>
         <Select
           options={noteBooksOptions()}
           onChange={onSelectChange}
