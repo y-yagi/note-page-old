@@ -4,6 +4,7 @@ import App from "./App";
 import * as firebase from "@firebase/testing";
 import Auth from "../libs/Auth";
 import PageRepository from "../libs/PageRepository";
+import NoteBookRepository from "../libs/NoteBookRepository";
 import { act, render, fireEvent } from "@testing-library/react";
 
 const FIRESTORE_PROJECT_ID = "my-test-project";
@@ -25,8 +26,13 @@ afterAll(() => {
 it("renders component", () => {
   const auth = new Auth(app);
   const pageRepository = new PageRepository(app);
+  const noteBookRepository = new NoteBookRepository(app);
   const { getByText } = render(
-    <App auth={auth} pageRepository={pageRepository} />
+    <App
+      auth={auth}
+      pageRepository={pageRepository}
+      noteBookRepository={noteBookRepository}
+    />
   );
   expect(getByText("NotePage")).toBeInTheDocument();
 });
