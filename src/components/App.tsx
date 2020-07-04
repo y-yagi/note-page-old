@@ -158,6 +158,11 @@ function App(props: Props) {
   }
 
   function onSelectChange(_event: any, data: any): void {
+    if (data.value === "create_new_note_book") {
+      props.history.push("/notebooks/new");
+      return;
+    }
+
     (async () => {
       var bookID = "";
       for (const book of noteBooks) {
@@ -180,6 +185,11 @@ function App(props: Props) {
         value: book.name,
         text: book.name,
       });
+    });
+    options.push({
+      key: "create_new_note_book",
+      value: "create_new_note_book",
+      text: "Create a new note book",
     });
     return options;
   }
@@ -243,9 +253,6 @@ function App(props: Props) {
           onChange={onSelectChange}
           defaultValue={selectedNoteName}
         />
-        {/* <Button as={Link} color="blue" size="tiny" to="/notebooks/new">
-          Add
-        </Button> */}
       </Header>
       <Divider hidden section />
       <Button as="a" color="blue" onClick={() => handleCreate()}>
