@@ -57,7 +57,7 @@ function NoteBookForm(props: Props) {
             required
             value={name}
             onChange={handleChangeName}
-            data-testid="pagename"
+            data-testid="notebookname"
           />
         </Form.Field>
         <Button as="a" onClick={() => handleCancel()}>
