@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import history from "../history";
 import App from "./App";
 import * as firebase from "@firebase/testing";
 import Auth from "../libs/Auth";
@@ -30,6 +31,7 @@ it("renders component", () => {
   const { getByText } = render(
     <App
       auth={auth}
+      history={history}
       pageRepository={pageRepository}
       noteBookRepository={noteBookRepository}
     />
