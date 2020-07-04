@@ -51,15 +51,15 @@ interface Props {
 function App(props: Props) {
   const [pages, setPages] = useState<Page[]>([]);
   const [selectedPageID, setSelectedPageID] = useState("");
-  const [selectedNoteID, setSelectedNoteID] = useState("");
+  const [selectedNoteBookID, setSelectedNoteBookID] = useState("");
   const [cancelConfirm, setCancelConfirm] = useState(false);
   const [loading, setLoading] = useState(true);
   const [tabActiveIndex, setTabActiveIndex] = useState(0);
   const [showForm, setShowForm] = useState(false);
   const [noteBooks, setNoteBooks] = useState<NoteBook[]>([]);
   const unsubscribeRef = useRef<firebase.Unsubscribe>();
-  let selectedNoteName = "default";
-  let defaultNoteID = "";
+  let selectedNoteBookName = "default";
+  let defaultNoteBookID = "";
 
   useEffect(() => {
     (async () => {
@@ -87,9 +87,9 @@ function App(props: Props) {
       books.push(book);
 
       if (book.name === "default") {
-        setSelectedNoteID(book.uid);
-        selectedNoteName = book.name;
-        defaultNoteID = book.uid;
+        setSelectedNoteBookID(book.uid);
+        selectedNoteBookName = book.name;
+        defaultNoteBookID = book.uid;
       }
     }
     setNoteBooks(books);
@@ -97,7 +97,7 @@ function App(props: Props) {
 
   async function fetchPages(noteID: string): Promise<any> {
     if (noteID === "") {
-      noteID = defaultNoteID;
+      noteID = defaultNoteBookID;
     }
     unsubscribeRef.current = props.pageRepository
       .pages()
@@ -167,9 +167,9 @@ function App(props: Props) {
       var bookID = "";
       for (const book of noteBooks) {
         if (book.name === data.value) {
-          setSelectedNoteID(book.uid);
+          setSelectedNoteBookID(book.uid);
           bookID = book.uid;
-          selectedNoteName = book.name;
+          selectedNoteBookName = book.name;
           break;
         }
       }
@@ -251,7 +251,7 @@ function App(props: Props) {
         <Select
           options={noteBooksOptions()}
           onChange={onSelectChange}
-          defaultValue={selectedNoteName}
+          defaultValue={selectedNoteBookName}
         />
       </Header>
       <Divider hidden section />
@@ -272,7 +272,7 @@ function App(props: Props) {
           auth={props.auth}
           pageRepository={props.pageRepository}
           pageID={selectedPageID}
-          noteBookID={selectedNoteID}
+          noteBookID={selectedNoteBookID}
           onUpdatePage={onUpdatePage}
           onCancelPage={onCancelPage}
         />
