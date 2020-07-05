@@ -63,17 +63,20 @@ function App(props: Props) {
 
   const memoizeFetchNoteBooks = useCallback((repository, userID) => {
     return fetchNoteBooks(repository, userID);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const memoizeFetchPages = useCallback((repository, userID, noteBookID) => {
-     return fetchPages(repository, userID, noteBookID)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    return fetchPages(repository, userID, noteBookID);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     (async () => {
-      await memoizeFetchNoteBooks(props.noteBookRepository, props.auth.userID());
+      await memoizeFetchNoteBooks(
+        props.noteBookRepository,
+        props.auth.userID()
+      );
       await memoizeFetchPages(props.pageRepository, props.auth.userID(), "");
     })();
 
@@ -82,9 +85,18 @@ function App(props: Props) {
         unsubscribeRef.current();
       }
     };
-  }, [memoizeFetchNoteBooks,memoizeFetchPages, props.auth, props.pageRepository, props.noteBookRepository]);
+  }, [
+    memoizeFetchNoteBooks,
+    memoizeFetchPages,
+    props.auth,
+    props.pageRepository,
+    props.noteBookRepository,
+  ]);
 
-  async function fetchNoteBooks(repository: NoteBookRepository, userID: string): Promise<any> {
+  async function fetchNoteBooks(
+    repository: NoteBookRepository,
+    userID: string
+  ): Promise<any> {
     let books: NoteBook[] = [];
     const noteBookRef = repository.notebooks();
     const ref = await noteBookRef
@@ -105,7 +117,11 @@ function App(props: Props) {
     setNoteBooks(books);
   }
 
-  async function fetchPages(repository: PageRepository, userID: string, noteID: string): Promise<any> {
+  async function fetchPages(
+    repository: PageRepository,
+    userID: string,
+    noteID: string
+  ): Promise<any> {
     if (noteID === "") {
       noteID = defaultNoteBookID;
     }
