@@ -4,8 +4,8 @@ import Interweave from "interweave";
 import { UrlMatcher } from "interweave-autolink";
 import PageForm from "./PageForm";
 import Auth from "../libs/Auth";
-import PageRepostitory from "../libs/PageRepository";
-import NoteBookRepostitory from "../libs/NoteBookRepository";
+import PageRepository from "../libs/PageRepository";
+import NoteBookRepository from "../libs/NoteBookRepository";
 import { History } from "history";
 import {
   Container,
@@ -43,8 +43,8 @@ interface NoteBookOption {
 
 interface Props {
   auth: Auth;
-  pageRepository: PageRepostitory;
-  noteBookRepository: NoteBookRepostitory;
+  pageRepository: PageRepository;
+  noteBookRepository: NoteBookRepository;
   history: History;
 }
 
@@ -63,8 +63,8 @@ function App(props: Props) {
 
   useEffect(() => {
     (async () => {
-      await fetchNoteBooks();
-      await fetchPages("");
+      await fetchNoteBooks(props.noteBookRepository, props.auth.userID());
+      await fetchPages(props.pageRepository, props.auth.userID(), "");
     })();
 
     return () => {
@@ -74,11 +74,11 @@ function App(props: Props) {
     };
   }, [props.auth, props.pageRepository, props.noteBookRepository]);
 
-  async function fetchNoteBooks(): Promise<any> {
+  async function fetchNoteBooks(repository: NoteBookRepository, userID: string): Promise<any> {
     let books: NoteBook[] = [];
-    const noteBookRef = props.noteBookRepository.notebooks();
+    const noteBookRef = repository.notebooks();
     const ref = await noteBookRef
-      .where("userId", "==", props.auth.userID())
+      .where("userId", "==", userID)
       .orderBy("createdAt", "asc")
       .get();
 
@@ -95,13 +95,13 @@ function App(props: Props) {
     setNoteBooks(books);
   }
 
-  async function fetchPages(noteID: string): Promise<any> {
+  async function fetchPages(repository: PageRepository, userID: string, noteID: string): Promise<any> {
     if (noteID === "") {
       noteID = defaultNoteBookID;
     }
-    unsubscribeRef.current = props.pageRepository
+    unsubscribeRef.current = repository
       .pages()
-      .where("userId", "==", props.auth.userID())
+      .where("userId", "==", userID)
       .where("noteBookId", "==", noteID)
       .orderBy("updatedAt", "desc")
       .onSnapshot((snapshot) => {
@@ -173,7 +173,7 @@ function App(props: Props) {
           break;
         }
       }
-      await fetchPages(bookID);
+      await fetchPages(props.pageRepository, props.auth.userID(), bookID);
     })();
   }
 
