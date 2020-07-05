@@ -138,7 +138,7 @@ function App(props: Props) {
             </Button>
             <Interweave
               content={page.content}
-              matchers={[new UrlMatcher("url")]}
+              matchers={[new UrlMatcher("url", { customTLDs: ["app"] })]}
               newWindow
             />
           </Tab.Pane>
