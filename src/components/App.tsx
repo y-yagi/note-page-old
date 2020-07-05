@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import "./App.css";
 import Interweave from "interweave";
 import { UrlMatcher } from "interweave-autolink";
@@ -61,10 +61,20 @@ function App(props: Props) {
   let selectedNoteBookName = "default";
   let defaultNoteBookID = "";
 
+  const memoizeFetchNoteBooks = useCallback((repository, userID) => {
+    return fetchNoteBooks(repository, userID);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const memoizeFetchPages = useCallback((repository, userID, noteBookID) => {
+     return fetchPages(repository, userID, noteBookID)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   useEffect(() => {
     (async () => {
-      await fetchNoteBooks(props.noteBookRepository, props.auth.userID());
-      await fetchPages(props.pageRepository, props.auth.userID(), "");
+      await memoizeFetchNoteBooks(props.noteBookRepository, props.auth.userID());
+      await memoizeFetchPages(props.pageRepository, props.auth.userID(), "");
     })();
 
     return () => {
@@ -72,7 +82,7 @@ function App(props: Props) {
         unsubscribeRef.current();
       }
     };
-  }, [props.auth, props.pageRepository, props.noteBookRepository]);
+  }, [memoizeFetchNoteBooks,memoizeFetchPages, props.auth, props.pageRepository, props.noteBookRepository]);
 
   async function fetchNoteBooks(repository: NoteBookRepository, userID: string): Promise<any> {
     let books: NoteBook[] = [];
