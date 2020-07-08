@@ -53,6 +53,10 @@ function App(props: Props) {
   const [selectedPageID, setSelectedPageID] = useState("");
   const [selectedNoteBookID, setSelectedNoteBookID] = useState("");
   const [cancelConfirm, setCancelConfirm] = useState(false);
+  const [
+    destroyNoteBookCancelConfirm,
+    setDestoryNoteBookCancelConfirm,
+  ] = useState(false);
   const [loading, setLoading] = useState(true);
   const [tabActiveIndex, setTabActiveIndex] = useState(0);
   const [showForm, setShowForm] = useState(false);
@@ -183,6 +187,27 @@ function App(props: Props) {
     setShowForm(false);
   }
 
+  function handleDestroyNoteBookConfirm(): void {
+    setDestoryNoteBookCancelConfirm(true);
+  }
+
+  function handleDestroyNotebookCancel(): void {
+    setDestoryNoteBookCancelConfirm(false);
+  }
+
+  function handleDestroyNoteBook(): void {
+    setDestoryNoteBookCancelConfirm(false);
+    props.noteBookRepository.notebook(selectedNoteBookID).delete();
+    (async () => {
+      selectedNoteBookName = "default";
+      await fetchPages(
+        props.pageRepository,
+        props.auth.userID(),
+        defaultNoteBookID
+      );
+    })();
+  }
+
   function onSelectChange(_event: any, data: any): void {
     if (data.value === "create_new_note_book") {
       props.history.push("/notebooks/new");
@@ -284,6 +309,20 @@ function App(props: Props) {
       <Button as="a" color="blue" onClick={() => handleCreate()}>
         Create a new page
       </Button>
+      <Button
+        as="a"
+        disabled={selectedNoteBookID === defaultNoteBookID}
+        color="red"
+        floated="right"
+        onClick={() => handleDestroyNoteBookConfirm()}
+      >
+        Destory a note book
+      </Button>
+      <Confirm
+        open={destroyNoteBookCancelConfirm}
+        onCancel={() => handleDestroyNotebookCancel()}
+        onConfirm={() => handleDestroyNoteBook()}
+      />
       <Segment>
         <Tab
           panes={panes()}
