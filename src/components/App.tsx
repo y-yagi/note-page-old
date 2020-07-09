@@ -210,6 +210,17 @@ function App(props: Props) {
 
   function handleDestroyNoteBook(): void {
     setDestoryNoteBookCancelConfirm(false);
+    (async () => {
+      const ref = await props.pageRepository
+        .pages()
+        .where("userId", "==", props.auth.userID())
+        .where("noteBookId", "==", selectedNoteBookID)
+        .get();
+      for (const doc of ref.docs) {
+        doc.ref.delete();
+      }
+    })();
+
     props.noteBookRepository.notebook(selectedNoteBookID).delete();
     (async () => {
       selectedNoteBookName = "default";
@@ -335,6 +346,7 @@ function App(props: Props) {
         open={destroyNoteBookCancelConfirm}
         onCancel={() => handleDestroyNotebookCancel()}
         onConfirm={() => handleDestroyNoteBook()}
+        content="Pages that belong to the notebook will destroy also. Are you sure?"
       />
       <Segment>
         <Tab
