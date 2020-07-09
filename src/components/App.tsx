@@ -63,7 +63,7 @@ function App(props: Props) {
   const [noteBooks, setNoteBooks] = useState<NoteBook[]>([]);
   const unsubscribeRef = useRef<firebase.Unsubscribe>();
   let selectedNoteBookName = "default";
-  let defaultNoteBookID = "";
+  let cachedDefaultNoteBookId = "";
 
   const memoizeFetchNoteBooks = useCallback((repository, userID) => {
     return fetchNoteBooks(repository, userID);
@@ -115,7 +115,7 @@ function App(props: Props) {
       if (book.name === "default") {
         setSelectedNoteBookID(book.uid);
         selectedNoteBookName = book.name;
-        defaultNoteBookID = book.uid;
+        cachedDefaultNoteBookId = book.uid;
       }
     }
     setNoteBooks(books);
@@ -127,7 +127,7 @@ function App(props: Props) {
     noteID: string
   ): Promise<any> {
     if (noteID === "") {
-      noteID = defaultNoteBookID;
+      noteID = defaultNoteBookID();
     }
     unsubscribeRef.current = repository
       .pages()
@@ -146,6 +146,19 @@ function App(props: Props) {
         setPages(pages);
         setLoading(false);
       });
+  }
+
+  function defaultNoteBookID(): string {
+    if (cachedDefaultNoteBookId !== "") {
+      return cachedDefaultNoteBookId;
+    }
+
+    for (const book of noteBooks) {
+      if (book.name === "default") {
+        return book.uid;
+      }
+    }
+    return "";
   }
 
   function handleDestroy(id: string): void {
@@ -203,7 +216,7 @@ function App(props: Props) {
       await fetchPages(
         props.pageRepository,
         props.auth.userID(),
-        defaultNoteBookID
+        defaultNoteBookID()
       );
     })();
   }
@@ -311,7 +324,7 @@ function App(props: Props) {
       </Button>
       <Button
         as="a"
-        disabled={selectedNoteBookID === defaultNoteBookID}
+        disabled={selectedNoteBookID === defaultNoteBookID()}
         color="red"
         floated="right"
         onClick={() => handleDestroyNoteBookConfirm()}
