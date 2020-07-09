@@ -229,6 +229,7 @@ function App(props: Props) {
         props.auth.userID(),
         defaultNoteBookID()
       );
+      setTabActiveIndex(0);
     })();
   }
 
@@ -249,6 +250,7 @@ function App(props: Props) {
         }
       }
       await fetchPages(props.pageRepository, props.auth.userID(), bookID);
+      setTabActiveIndex(0);
     })();
   }
 
