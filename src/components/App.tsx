@@ -1,10 +1,12 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import "./App.css";
 import Interweave from "interweave";
 import { UrlMatcher } from "interweave-autolink";
 import PageForm from "./PageForm";
 import Auth from "../libs/Auth";
-import PageRepostitory from "../libs/PageRepository";
+import PageRepository from "../libs/PageRepository";
+import NoteBookRepository from "../libs/NoteBookRepository";
+import { History } from "history";
 import {
   Container,
   Confirm,
@@ -15,6 +17,7 @@ import {
   Header,
   Button,
   Segment,
+  Select,
   Tab,
   TabProps,
 } from "semantic-ui-react";
@@ -26,45 +29,137 @@ interface Page {
   uid: string;
 }
 
+interface NoteBook {
+  id: string;
+  name: string;
+  uid: string;
+}
+
+interface NoteBookOption {
+  key: string;
+  value: string;
+  text: string;
+}
+
 interface Props {
   auth: Auth;
-  pageRepository: PageRepostitory;
+  pageRepository: PageRepository;
+  noteBookRepository: NoteBookRepository;
+  history: History;
 }
 
 function App(props: Props) {
   const [pages, setPages] = useState<Page[]>([]);
   const [selectedPageID, setSelectedPageID] = useState("");
+  const [selectedNoteBookID, setSelectedNoteBookID] = useState("");
   const [cancelConfirm, setCancelConfirm] = useState(false);
+  const [
+    destroyNoteBookCancelConfirm,
+    setDestoryNoteBookCancelConfirm,
+  ] = useState(false);
   const [loading, setLoading] = useState(true);
   const [tabActiveIndex, setTabActiveIndex] = useState(0);
   const [showForm, setShowForm] = useState(false);
-
+  const [noteBooks, setNoteBooks] = useState<NoteBook[]>([]);
   const unsubscribeRef = useRef<firebase.Unsubscribe>();
+  let selectedNoteBookName = "default";
+  let cachedDefaultNoteBookId = "";
+
+  const memoizeFetchNoteBooks = useCallback((repository, userID) => {
+    return fetchNoteBooks(repository, userID);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const memoizeFetchPages = useCallback((repository, userID, noteBookID) => {
+    return fetchPages(repository, userID, noteBookID);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     (async () => {
-      unsubscribeRef.current = props.pageRepository
-        .pages()
-        .where("userId", "==", props.auth.userID())
-        .orderBy("updatedAt", "desc")
-        .onSnapshot((snapshot) => {
-          let pages: Page[] = [];
-          if (snapshot.size) {
-            for (const doc of snapshot.docs) {
-              let page = { uid: doc.id, ...doc.data() } as Page;
-              pages.push(page);
-            }
-          }
-
-          setPages(pages);
-          setLoading(false);
-        });
+      await memoizeFetchNoteBooks(
+        props.noteBookRepository,
+        props.auth.userID()
+      );
+      await memoizeFetchPages(props.pageRepository, props.auth.userID(), "");
     })();
 
     return () => {
-      unsubscribeRef.current();
+      if (typeof unsubscribeRef.current === "function") {
+        unsubscribeRef.current();
+      }
     };
-  }, [props.auth, props.pageRepository]);
+  }, [
+    memoizeFetchNoteBooks,
+    memoizeFetchPages,
+    props.auth,
+    props.pageRepository,
+    props.noteBookRepository,
+  ]);
+
+  async function fetchNoteBooks(
+    repository: NoteBookRepository,
+    userID: string
+  ): Promise<any> {
+    let books: NoteBook[] = [];
+    const noteBookRef = repository.notebooks();
+    const ref = await noteBookRef
+      .where("userId", "==", userID)
+      .orderBy("createdAt", "asc")
+      .get();
+
+    for (const doc of ref.docs) {
+      const book = { uid: doc.id, ...doc.data() } as NoteBook;
+      books.push(book);
+
+      if (book.name === "default") {
+        setSelectedNoteBookID(book.uid);
+        selectedNoteBookName = book.name;
+        cachedDefaultNoteBookId = book.uid;
+      }
+    }
+    setNoteBooks(books);
+  }
+
+  async function fetchPages(
+    repository: PageRepository,
+    userID: string,
+    noteID: string
+  ): Promise<any> {
+    if (noteID === "") {
+      noteID = defaultNoteBookID();
+    }
+    unsubscribeRef.current = repository
+      .pages()
+      .where("userId", "==", userID)
+      .where("noteBookId", "==", noteID)
+      .orderBy("updatedAt", "desc")
+      .onSnapshot((snapshot) => {
+        let pages: Page[] = [];
+        if (snapshot.size) {
+          for (const doc of snapshot.docs) {
+            let page = { uid: doc.id, ...doc.data() } as Page;
+            pages.push(page);
+          }
+        }
+
+        setPages(pages);
+        setLoading(false);
+      });
+  }
+
+  function defaultNoteBookID(): string {
+    if (cachedDefaultNoteBookId !== "") {
+      return cachedDefaultNoteBookId;
+    }
+
+    for (const book of noteBooks) {
+      if (book.name === "default") {
+        return book.uid;
+      }
+    }
+    return "";
+  }
 
   function handleDestroy(id: string): void {
     setSelectedPageID("");
@@ -103,6 +198,69 @@ function App(props: Props) {
 
   function onCancelPage(): void {
     setShowForm(false);
+  }
+
+  function handleDestroyNoteBookConfirm(): void {
+    setDestoryNoteBookCancelConfirm(true);
+  }
+
+  function handleDestroyNotebookCancel(): void {
+    setDestoryNoteBookCancelConfirm(false);
+  }
+
+  function handleDestroyNoteBook(): void {
+    setDestoryNoteBookCancelConfirm(false);
+    (async () => {
+      const ref = await props.pageRepository
+        .pages()
+        .where("userId", "==", props.auth.userID())
+        .where("noteBookId", "==", selectedNoteBookID)
+        .get();
+      for (const doc of ref.docs) {
+        doc.ref.delete();
+      }
+    })();
+
+    props.noteBookRepository.notebook(selectedNoteBookID).delete();
+    window.location.reload();
+  }
+
+  function onSelectChange(_event: any, data: any): void {
+    if (data.value === "create_new_note_book") {
+      props.history.push("/notebooks/new");
+      return;
+    }
+
+    (async () => {
+      var bookID = "";
+      for (const book of noteBooks) {
+        if (book.name === data.value) {
+          setSelectedNoteBookID(book.uid);
+          bookID = book.uid;
+          selectedNoteBookName = book.name;
+          break;
+        }
+      }
+      await fetchPages(props.pageRepository, props.auth.userID(), bookID);
+      setTabActiveIndex(0);
+    })();
+  }
+
+  function noteBooksOptions(): NoteBookOption[] {
+    let options: NoteBookOption[] = [];
+    noteBooks.forEach((book) => {
+      options.push({
+        key: book.uid,
+        value: book.name,
+        text: book.name,
+      });
+    });
+    options.push({
+      key: "create_new_note_book",
+      value: "create_new_note_book",
+      text: "Create a new note book",
+    });
+    return options;
   }
 
   function panes() {
@@ -153,15 +311,37 @@ function App(props: Props) {
     <Container className="main-container">
       <Header as="h2" icon textAlign="center" color="grey">
         <Icon name="write" circular />
-        <Header.Content>NotePage</Header.Content>
         <Dimmer active={loading}>
           <Loader inverted>Loading...</Loader>
         </Dimmer>
+      </Header>
+      <Header as="h3" icon textAlign="center" color="grey">
+        <Header.Content>NoteBooks</Header.Content>
+        <Select
+          options={noteBooksOptions()}
+          onChange={onSelectChange}
+          defaultValue={selectedNoteBookName}
+        />
       </Header>
       <Divider hidden section />
       <Button as="a" color="blue" onClick={() => handleCreate()}>
         Create a new page
       </Button>
+      <Button
+        as="a"
+        disabled={selectedNoteBookID === defaultNoteBookID()}
+        color="red"
+        floated="right"
+        onClick={() => handleDestroyNoteBookConfirm()}
+      >
+        Destory a note book
+      </Button>
+      <Confirm
+        open={destroyNoteBookCancelConfirm}
+        onCancel={() => handleDestroyNotebookCancel()}
+        onConfirm={() => handleDestroyNoteBook()}
+        content="Pages that belong to the notebook will destroy also. Are you sure?"
+      />
       <Segment>
         <Tab
           panes={panes()}
@@ -176,6 +356,7 @@ function App(props: Props) {
           auth={props.auth}
           pageRepository={props.pageRepository}
           pageID={selectedPageID}
+          noteBookID={selectedNoteBookID}
           onUpdatePage={onUpdatePage}
           onCancelPage={onCancelPage}
         />

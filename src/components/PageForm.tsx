@@ -8,6 +8,7 @@ interface Props {
   auth: Auth;
   pageRepository: PageRespository;
   pageID: string;
+  noteBookID: string;
   onUpdatePage: () => void;
   onCancelPage: () => void;
 }
@@ -72,6 +73,7 @@ function PageForm(props: Props) {
       name: name,
       content: content,
       userId: props.auth.userID(),
+      noteBookId: props.noteBookID,
       createdAt: props.pageRepository.timestamp(),
       updatedAt: props.pageRepository.timestamp(),
     };

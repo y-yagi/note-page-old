@@ -23,7 +23,9 @@
     "strictFunctionTypes": false,
     "strictBindCallApply": false,
     "strictPropertyInitialization": false,
-    "noImplicitThis": false
+    "noImplicitThis": false,
+    "outDir": "out",
+    "sourceMap": true
   },
   "include": [
     "src"
