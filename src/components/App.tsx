@@ -222,15 +222,7 @@ function App(props: Props) {
     })();
 
     props.noteBookRepository.notebook(selectedNoteBookID).delete();
-    (async () => {
-      selectedNoteBookName = "default";
-      await fetchPages(
-        props.pageRepository,
-        props.auth.userID(),
-        defaultNoteBookID()
-      );
-      setTabActiveIndex(0);
-    })();
+    window.location.reload();
   }
 
   function onSelectChange(_event: any, data: any): void {
