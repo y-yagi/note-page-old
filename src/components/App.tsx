@@ -211,17 +211,20 @@ function App(props: Props) {
   function handleDestroyNoteBook(): void {
     setDestoryNoteBookCancelConfirm(false);
     (async () => {
-      const ref = await props.pageRepository
-        .pages()
-        .where("userId", "==", props.auth.userID())
-        .where("noteBookId", "==", selectedNoteBookID)
-        .get();
-      for (const doc of ref.docs) {
-        doc.ref.delete();
-      }
+      await props.noteBookRepository.db.runTransaction(async (t) => {
+        const ref = await props.pageRepository
+          .pages()
+          .where("userId", "==", props.auth.userID())
+          .where("noteBookId", "==", selectedNoteBookID)
+          .get();
+        for (const doc of ref.docs) {
+          await t.delete(doc.ref);
+        }
+
+        await t.delete(props.noteBookRepository.notebook(selectedNoteBookID));
+      });
     })();
 
-    props.noteBookRepository.notebook(selectedNoteBookID).delete();
     window.location.reload();
   }
 
