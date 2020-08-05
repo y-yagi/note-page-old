@@ -8,6 +8,7 @@
     "@testing-library/react": "^9.5.0",
     "auth0-js": "^9.13.4",
     "firebase": "^7.14.4",
+    "formik": "^2.1.5",
     "interweave": "^11.2.0",
     "interweave-autolink": "^3.0.2",
     "react": "^16.13.1",
