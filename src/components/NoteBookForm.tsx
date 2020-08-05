@@ -1,6 +1,6 @@
 import Auth from "../libs/Auth";
 import NoteBookRepository from "../libs/NoteBookRepository";
-import React from "react";
+import React, { ReactComponentElement } from "react";
 import { Formik } from "formik";
 import { History } from "history";
 import "./App.css";
@@ -19,12 +19,16 @@ interface Props {
   history: History;
 }
 
+interface FormValues {
+  name: string;
+}
+
 function NoteBookForm(props: Props) {
   function handleCancel(): void {
     props.history.push("/");
   }
 
-  function onSubmitPage(values: any): void {
+  function onSubmitPage(values: FormValues): void {
     let data = {
       name: values["name"],
       userId: props.auth.userID(),
@@ -36,7 +40,7 @@ function NoteBookForm(props: Props) {
     props.history.push("/");
   }
 
-  function form() {
+  function form(): ReactComponentElement<typeof Formik> {
     return (
       <Formik
         initialValues={{ name: "" }}
