@@ -1,6 +1,7 @@
 import Auth from "../libs/Auth";
 import PageRespository from "../libs/PageRepository";
 import React, { useState, useEffect } from "react";
+import { Formik } from "formik";
 import TextareaAutosize from "react-textarea-autosize";
 import { Button, Form, Dimmer, Loader } from "semantic-ui-react";
 
@@ -13,9 +14,14 @@ interface Props {
   onCancelPage: () => void;
 }
 
+interface FormValues {
+  name: string;
+  content: string;
+}
+
 function PageForm(props: Props) {
-  const [name, setName] = useState("");
-  const [content, setContent] = useState("");
+  const [defaultName, setDefaultName] = useState("");
+  const [defaultContent, setDefaultContent] = useState("");
   const [action, setAction] = useState("create");
   const [updatedAt, setUpdatedAt] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -32,8 +38,8 @@ function PageForm(props: Props) {
           .then((snapshot) => {
             const page = snapshot.data();
 
-            setName(page.name);
-            setContent(page.content);
+            setDefaultName(page.name);
+            setDefaultContent(page.content);
             setAction("update");
             setLoading(false);
           });
@@ -43,24 +49,14 @@ function PageForm(props: Props) {
     })(props.pageID);
   }, [props.pageID, updatedAt, props.pageRepository]);
 
-  function handleChangeName(event: React.FormEvent<HTMLInputElement>): void {
-    setName((event.target as HTMLInputElement).value);
-  }
-
-  function handleChangeContent(
-    event: React.FormEvent<HTMLTextAreaElement>
-  ): void {
-    setContent((event.target as HTMLInputElement).value);
-  }
-
   function handleCancel(): void {
     cleanupFormForCreate();
     onCancelPage();
   }
 
   function cleanupFormForCreate(): void {
-    setName("");
-    setContent("");
+    setDefaultName("");
+    setDefaultContent("");
     setAction("create");
   }
 
@@ -68,10 +64,10 @@ function PageForm(props: Props) {
     window.scrollTo(0, document.body.scrollHeight);
   }
 
-  function onSubmitPage(event: React.FormEvent<HTMLFormElement>): void {
+  function onSubmitPage(values: FormValues): void {
     let data = {
-      name: name,
-      content: content,
+      name: values["name"],
+      content: values["content"],
       userId: props.auth.userID(),
       noteBookId: props.noteBookID,
       createdAt: props.pageRepository.timestamp(),
@@ -88,12 +84,10 @@ function PageForm(props: Props) {
     const d = new Date();
 
     setUpdatedAt(d.getTime());
-    setName("");
-    setContent("");
+    setDefaultName("");
+    setDefaultContent("");
     setAction("create");
     onUpdatePage();
-
-    event.preventDefault();
   }
 
   return (
@@ -101,35 +95,47 @@ function PageForm(props: Props) {
       <Dimmer active={loading}>
         <Loader inverted>Loading...</Loader>
       </Dimmer>
-      <Form onSubmit={(event) => onSubmitPage(event)}>
-        <Form.Field required>
-          <label>Page Name</label>
-          <input
-            placeholder="Name"
-            required
-            value={name}
-            onChange={handleChangeName}
-            data-testid="pagename"
-          />
-        </Form.Field>
-        <Form.Field required>
-          <label>Content</label>
-          <TextareaAutosize
-            placeholder="Content"
-            required
-            value={content}
-            onChange={handleChangeContent}
-            onHeightChange={scrollToBottom}
-            data-testid="pagecontent"
-          />
-        </Form.Field>
-        <Button as="a" onClick={() => handleCancel()}>
-          cancel
-        </Button>
-        <Button type="submit" color="blue">
-          {action}
-        </Button>
-      </Form>
+      <Formik
+        initialValues={{ name: defaultName, content: defaultContent }}
+        onSubmit={(values, { setSubmitting }) => {
+          onSubmitPage(values);
+        }}
+        enableReinitialize={true}
+      >
+        {({ values, handleChange, handleSubmit, isSubmitting }) => (
+          <Form onSubmit={handleSubmit}>
+            <Form.Field required>
+              <label>Page Name</label>
+              <input
+                placeholder="Name"
+                required
+                name="name"
+                onChange={handleChange}
+                value={values.name}
+                data-testid="pagename"
+              />
+            </Form.Field>
+            <Form.Field required>
+              <label>Content</label>
+              <TextareaAutosize
+                name="content"
+                placeholder="Content"
+                required
+                value={values.content}
+                onChange={handleChange}
+                onHeightChange={scrollToBottom}
+                data-testid="pagecontent"
+              />
+            </Form.Field>
+            <Button as="a" onClick={() => handleCancel()}>
+              cancel
+            </Button>
+            <Button type="submit" disabled={isSubmitting} color="blue">
+              {action}
+            </Button>
+          </Form>
+        )}
+      </Formik>
     </span>
   );
 }
