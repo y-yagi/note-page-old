@@ -14,6 +14,11 @@ interface Props {
   onCancelPage: () => void;
 }
 
+interface FormValues {
+  name: string;
+  content: string;
+}
+
 function PageForm(props: Props) {
   const [defaultName, setDefaultName] = useState("");
   const [defaultContent, setDefaultContent] = useState("");
@@ -59,7 +64,7 @@ function PageForm(props: Props) {
     window.scrollTo(0, document.body.scrollHeight);
   }
 
-  function onSubmitPage(values: any): void {
+  function onSubmitPage(values: FormValues): void {
     let data = {
       name: values["name"],
       content: values["content"],
