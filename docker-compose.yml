@@ -1,7 +1,7 @@
 version: '2'
 services:
   firebase:
-    image: docker.pkg.github.com/y-yagi/note-page/note-page_firebase:1.0.1
+    image: docker.pkg.github.com/y-yagi/firebase-emulator-docker/firebase-emulator:1.0
     container_name: firebase
     ports:
       - '8080:8080'
