@@ -7,7 +7,7 @@
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^9.5.0",
     "auth0-js": "^9.14.0",
-    "firebase": "^7.19.1",
+    "firebase": "^7.21.1",
     "formik": "^2.1.5",
     "interweave": "^11.2.0",
     "interweave-autolink": "^3.0.2",
