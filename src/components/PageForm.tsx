@@ -78,7 +78,7 @@ function PageForm(props: Props) {
       props.pageRepository.pages().add(data);
     } else {
       data["createdAt"] = null;
-      const result = props.pageRepository.page(props.pageID).update(data);
+      props.pageRepository.page(props.pageID).update(data);
     }
 
     const d = new Date();
