@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import history from "../history";
 import App from "./App";
-import * as firebase from "@firebase/testing";
+import * as firebase from "@firebase/rules-unit-testing";
 import Auth from "../libs/Auth";
 import PageRepository from "../libs/PageRepository";
 import NoteBookRepository from "../libs/NoteBookRepository";

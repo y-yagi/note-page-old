@@ -1,6 +1,6 @@
 import React from "react";
 import NoteBookForm from "./NoteBookForm";
-import * as firebase from "@firebase/testing";
+import * as firebase from "@firebase/rules-unit-testing";
 import Auth from "../libs/Auth";
 import PageRepository from "../libs/PageRepository";
 import NoteBookRepository from "../libs/NoteBookRepository";
