@@ -5,7 +5,7 @@
   "dependencies": {
     "@sentry/browser": "^5.25.0",
     "@testing-library/jest-dom": "^5.11.4",
-    "@testing-library/react": "^9.5.0",
+    "@testing-library/react": "^11.1.0",
     "auth0-js": "^9.14.0",
     "firebase": "^7.23.0",
     "formik": "^2.2.0",
