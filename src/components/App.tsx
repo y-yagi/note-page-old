@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import "./App.css";
-import Interweave from "interweave";
-import { UrlMatcher } from "interweave-autolink";
 import PageForm from "./PageForm";
 import Auth from "../libs/Auth";
 import PageRepository from "../libs/PageRepository";
@@ -21,6 +19,8 @@ import {
   Tab,
   TabProps,
 } from "semantic-ui-react";
+import ReactMarkdown from "react-markdown";
+import gfm from "remark-gfm";
 
 interface Page {
   id: string;
@@ -297,10 +297,10 @@ function App(props: Props) {
             >
               Edit
             </Button>
-            <Interweave
-              content={page.content}
-              matchers={[new UrlMatcher("url", { customTLDs: ["app"] })]}
-              newWindow
+            <ReactMarkdown
+              className="line-break"
+              plugins={[gfm]}
+              children={page.content}
             />
           </Tab.Pane>
         ),
