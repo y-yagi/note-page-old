@@ -48,7 +48,7 @@
     "@firebase/rules-unit-testing": "^1.0.7",
     "@types/history": "^4.7.8",
     "@types/jest": "^26.0.23",
-    "@types/node": "14.14.41",
+    "@types/node": "15.0.1",
     "@types/react": "^17.0.4",
     "@types/react-dom": "^17.0.3",
     "@types/react-router-dom": "^5.1.7",
